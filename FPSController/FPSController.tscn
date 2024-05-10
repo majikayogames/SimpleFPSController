@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://f6kx848g5bco"]
+
+[ext_resource type="Script" path="res://FPSController/FPSController.gd" id="1_o4fvy"]
+[ext_resource type="PackedScene" uid="uid://gvm0me264r32" path="res://models/disguise-glasses.glb" id="2_jjg3x"]
+[ext_resource type="PackedScene" uid="uid://7dm87wp0hyjg" path="res://models/wiggly_hair.tscn" id="3_g67or"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_60k8k"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_airj4"]
+
+[node name="CharacterBody3D" type="CharacterBody3D"]
+script = ExtResource("1_o4fvy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_60k8k")
+
+[node name="WorldModel" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_airj4")
+
+[node name="disguise-glasses" parent="WorldModel" instance=ExtResource("2_jjg3x")]
+transform = Transform3D(-2.2, 0, -3.32191e-07, 0, 2.2, 0, 3.32191e-07, 0, -2.2, 0, 1.1, -0.0612435)
+
+[node name="WigglyHair" parent="WorldModel" instance=ExtResource("3_g67or")]
+transform = Transform3D(2.58393, 0, 3.97904e-13, 0, 2.13661, 0, -3.97904e-13, 0, 2.58393, 0, 1.6983, 0)
+
+[node name="Head" type="Node3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.79, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+unique_name_in_owner = true
+cull_mask = 1048573
