@@ -24,6 +24,10 @@ var headbob_time := 0.0
 @export var air_move_speed := 500.0
 
 var wish_dir := Vector3.ZERO
+var cam_aligned_wish_dir := Vector3.ZERO
+
+var noclip_speed_mult := 3.0
+var noclip := false
 
 func get_move_speed() -> float:
 	return sprint_speed if Input.is_action_pressed("sprint") else walk_speed
@@ -44,6 +48,12 @@ func _unhandled_input(event):
 			rotate_y(-event.relative.x * look_sensitivity)
 			%Camera3D.rotate_x(-event.relative.y * look_sensitivity)
 			%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+	
+	if event is InputEventMouseButton and event.is_pressed():
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			noclip_speed_mult = min(100.0, noclip_speed_mult * 1.1)
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			noclip_speed_mult = max(0.1, noclip_speed_mult * 0.9)
 
 func _headbob_effect(delta):
 	headbob_time += delta * self.velocity.length()
@@ -69,6 +79,25 @@ func _handle_controller_look_input(delta):
 
 func _process(delta):
 	_handle_controller_look_input(delta)
+	
+func _handle_noclip(delta) -> bool:
+	if Input.is_action_just_pressed("_noclip") and OS.has_feature("debug"):
+		noclip = !noclip
+		noclip_speed_mult = 3.0
+	
+	$CollisionShape3D.disabled = noclip
+	
+	if not noclip:
+		return false
+	
+	var speed = get_move_speed() * noclip_speed_mult
+	if Input.is_action_pressed("sprint"):
+		speed *= 3.0
+	
+	self.velocity = cam_aligned_wish_dir * speed#Vector3.ZERO # GMod style where you can fly w/ noclip
+	global_position += self.velocity * delta
+	
+	return true
 
 func clip_velocity(normal: Vector3, overbounce : float, delta : float) -> void:
 	# When strafing into wall, + gravity, velocity will be pointing much in the opposite direction of the normal
@@ -145,12 +174,14 @@ func _physics_process(delta):
 	var input_dir = Input.get_vector("left", "right", "up", "down").normalized()
 	# Depending on which way you have you character facing, you may have to negate the input directions
 	wish_dir = self.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
+	cam_aligned_wish_dir = %Camera3D.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	
-	if is_on_floor():
-		if Input.is_action_just_pressed("jump") or (auto_bhop and Input.is_action_pressed("jump")):
-			self.velocity.y = jump_velocity
-		_handle_ground_physics(delta)
-	else:
-		_handle_air_physics(delta)
-	
-	move_and_slide()
+	if not _handle_noclip(delta):
+		if is_on_floor():
+			if Input.is_action_just_pressed("jump") or (auto_bhop and Input.is_action_pressed("jump")):
+				self.velocity.y = jump_velocity
+			_handle_ground_physics(delta)
+		else:
+			_handle_air_physics(delta)
+		
+		move_and_slide()
