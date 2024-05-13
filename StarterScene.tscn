@@ -186,7 +186,7 @@ light_energy = 0.75
 shadow_enabled = true
 
 [node name="CharacterBody3D" parent="." instance=ExtResource("1_2lyst")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00199997, 0)
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -45.8445, -0.969805, -19.3647)
 
 [node name="Level" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, -1.478, -28)

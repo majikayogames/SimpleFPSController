@@ -17,7 +17,7 @@ boot_splash/show_image=false
 
 [display]
 
-window/size/mode=3
+window/size/mode=4
 
 [input]
 
