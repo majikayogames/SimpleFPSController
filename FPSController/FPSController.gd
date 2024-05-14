@@ -101,8 +101,12 @@ func _slide_camera_smooth_back_to_origin(delta):
 
 func _snap_down_to_stairs_check() -> void:
 	var did_snap := false
+	# Modified slightly from tutorial. I don't notice any visual difference but I think this is correct.
+	# Since it is called after move_and_slide, _last_frame_was_on_floor should still be current frame number.
+	# After move_and_slide off top of stairs, on floor should then be false. Update raycast incase it's not already.
+	%StairsBelowRayCast3D.force_raycast_update()
 	var floor_below : bool = %StairsBelowRayCast3D.is_colliding() and not is_surface_too_steep(%StairsBelowRayCast3D.get_collision_normal())
-	var was_on_floor_last_frame = Engine.get_physics_frames() - _last_frame_was_on_floor == 1
+	var was_on_floor_last_frame = Engine.get_physics_frames() == _last_frame_was_on_floor
 	if not is_on_floor() and velocity.y <= 0 and (was_on_floor_last_frame or _snapped_to_stairs_last_frame) and floor_below:
 		var body_test_result = PhysicsTestMotionResult3D.new()
 		if _run_body_test_motion(self.global_transform, Vector3(0,-MAX_STEP_HEIGHT,0), body_test_result):

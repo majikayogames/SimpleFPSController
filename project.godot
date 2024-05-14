@@ -15,10 +15,6 @@ run/main_scene="res://StarterScene.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 boot_splash/show_image=false
 
-[display]
-
-window/size/mode=4
-
 [input]
 
 left={
