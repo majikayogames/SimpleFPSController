@@ -28,14 +28,16 @@ transform = Transform3D(-2.2, 0, -3.32191e-07, 0, 2.2, 0, 3.32191e-07, 0, -2.2, 
 [node name="WigglyHair" parent="WorldModel" instance=ExtResource("3_g67or")]
 transform = Transform3D(2.58393, 0, 3.97904e-13, 0, 2.13661, 0, -3.97904e-13, 0, 2.58393, 0, 1.6983, 0)
 
-[node name="Head" type="Node3D" parent="."]
-unique_name_in_owner = true
+[node name="HeadOriginalPosition" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.79, 0)
 
-[node name="CameraSmooth" type="Node3D" parent="Head"]
+[node name="Head" type="Node3D" parent="HeadOriginalPosition"]
 unique_name_in_owner = true
 
-[node name="Camera3D" type="Camera3D" parent="Head/CameraSmooth"]
+[node name="CameraSmooth" type="Node3D" parent="HeadOriginalPosition/Head"]
+unique_name_in_owner = true
+
+[node name="Camera3D" type="Camera3D" parent="HeadOriginalPosition/Head/CameraSmooth"]
 unique_name_in_owner = true
 cull_mask = 1048573
 
