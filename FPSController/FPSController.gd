@@ -114,7 +114,7 @@ func _snap_down_to_stairs_check() -> void:
 	var was_on_floor_last_frame = Engine.get_physics_frames() == _last_frame_was_on_floor
 	if not is_on_floor() and velocity.y <= 0 and (was_on_floor_last_frame or _snapped_to_stairs_last_frame) and floor_below:
 		var body_test_result = KinematicCollision3D.new()
-		if self.test_move(self.transform, Vector3(0,-MAX_STEP_HEIGHT,0), body_test_result):
+		if self.test_move(self.global_transform, Vector3(0,-MAX_STEP_HEIGHT,0), body_test_result):
 			_save_camera_pos_for_smoothing()
 			var translate_y = body_test_result.get_travel().y
 			self.position.y += translate_y
@@ -153,7 +153,7 @@ func _handle_crouch(delta) -> void:
 	var was_crouched_last_frame = is_crouched
 	if Input.is_action_pressed("crouch"):
 		is_crouched = true
-	elif is_crouched and not self.test_move(self.transform, Vector3(0,CROUCH_TRANSLATE,0)):
+	elif is_crouched and not self.test_move(self.global_transform, Vector3(0,CROUCH_TRANSLATE,0)):
 		is_crouched = false
 	
 	# Allow for crouch to heighten/extend a jump
@@ -163,7 +163,7 @@ func _handle_crouch(delta) -> void:
 	# Make sure not to get player stuck in floor/ceiling during crouch jumps
 	if translate_y_if_possible != 0.0:
 		var result = KinematicCollision3D.new()
-		self.test_move(self.transform, Vector3(0,translate_y_if_possible,0), result)
+		self.test_move(self.global_transform, Vector3(0,translate_y_if_possible,0), result)
 		self.position.y += result.get_travel().y
 		%Head.position.y -= result.get_travel().y
 		%Head.position.y = clampf(%Head.position.y, -CROUCH_TRANSLATE, 0)
