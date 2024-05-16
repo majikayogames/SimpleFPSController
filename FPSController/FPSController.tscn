@@ -48,4 +48,3 @@ target_position = Vector3(0, -0.55, 0)
 
 [node name="StairsBelowRayCast3D" type="RayCast3D" parent="."]
 unique_name_in_owner = true
-target_position = Vector3(0, -0.75, 0)

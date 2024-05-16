@@ -1,12 +1,13 @@
-[gd_scene load_steps=41 format=3 uid="uid://cumlkudt7n44b"]
+[gd_scene load_steps=54 format=3 uid="uid://cumlkudt7n44b"]
 
 [ext_resource type="Material" uid="uid://bk7nbd8td4gb1" path="res://textures/grey_checkerboard_mat.tres" id="1_1bstl"]
 [ext_resource type="PackedScene" uid="uid://f6kx848g5bco" path="res://FPSController/FPSController.tscn" id="1_2lyst"]
 [ext_resource type="Texture2D" uid="uid://d1uelfks0ip1w" path="res://textures/grid_image.png" id="2_uym2f"]
 [ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://utils/CSGStairMaker3D.tscn" id="3_2shvn"]
 [ext_resource type="ArrayMesh" uid="uid://dry23jeo6prdo" path="res://models/terrain_mesh.mesh" id="4_t8olv"]
-[ext_resource type="Texture2D" uid="uid://c7yth5opetwes" path="res://textures/kenney-dark-grey-checkerboard.png" id="5_pnti6"]
+[ext_resource type="Texture2D" uid="uid://c7yth5opetwes" path="res://textures/kenney-dark-grey-checkerboard-cc0.png" id="5_pnti6"]
 [ext_resource type="Texture2D" uid="uid://b28c62e3f23vb" path="res://textures/kenney-orange-checkerboard-cc0.png" id="6_s6lf8"]
+[ext_resource type="PackedScene" uid="uid://ca0wevg1lb4rx" path="res://utils/WaterMaker3D/WaterMaker3D.tscn" id="8_yjcdx"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bwjpn"]
 
@@ -175,6 +176,96 @@ point_count = 2
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t5onx"]
 albedo_texture = ExtResource("6_s6lf8")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_v1njd"]
+resource_local_to_scene = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_n815n"]
+resource_local_to_scene = true
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_v1njd")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fcxi3"]
+resource_local_to_scene = true
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_v1njd")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rrati"]
+resource_local_to_scene = true
+transparency = 1
+cull_mode = 2
+depth_draw_mode = 1
+albedo_color = Color(0.309804, 0.541176, 0.866667, 0.388235)
+roughness = 0.0
+normal_enabled = true
+normal_texture = SubResource("NoiseTexture2D_n815n")
+refraction_enabled = true
+refraction_texture = SubResource("NoiseTexture2D_fcxi3")
+uv1_scale = Vector3(0.04, 0.04, 0.04)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_m57mb"]
+resource_local_to_scene = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cmt2x"]
+resource_local_to_scene = true
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_m57mb")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_y1et2"]
+resource_local_to_scene = true
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_m57mb")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ursom"]
+resource_local_to_scene = true
+transparency = 1
+cull_mode = 2
+depth_draw_mode = 1
+albedo_color = Color(0.921569, 0.207843, 0.309804, 0.576471)
+roughness = 0.0
+normal_enabled = true
+normal_texture = SubResource("NoiseTexture2D_cmt2x")
+refraction_enabled = true
+refraction_texture = SubResource("NoiseTexture2D_y1et2")
+uv1_scale = Vector3(0.04, 0.04, 0.04)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_gvqr1"]
+resource_local_to_scene = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3ng6c"]
+resource_local_to_scene = true
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_gvqr1")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2d5rj"]
+resource_local_to_scene = true
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_gvqr1")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4xdw3"]
+resource_local_to_scene = true
+transparency = 1
+cull_mode = 2
+depth_draw_mode = 1
+albedo_color = Color(0.333333, 0.85098, 0.258824, 0.341176)
+roughness = 0.0
+normal_enabled = true
+normal_texture = SubResource("NoiseTexture2D_3ng6c")
+refraction_enabled = true
+refraction_texture = SubResource("NoiseTexture2D_2d5rj")
+uv1_scale = Vector3(0.04, 0.04, 0.04)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
 [node name="World" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -186,7 +277,6 @@ light_energy = 0.75
 shadow_enabled = true
 
 [node name="CharacterBody3D" parent="." instance=ExtResource("1_2lyst")]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -45.8445, -0.726286, -19.3647)
 
 [node name="Level" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, -1.478, -28)
@@ -492,3 +582,22 @@ path_local = true
 path_continuous_u = true
 path_u_distance = 1.0
 path_joined = false
+
+[node name="WaterMaker3D" parent="." instance=ExtResource("8_yjcdx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -68, -6.8, -69)
+size = Vector3(31, 11.4, 15)
+material = SubResource("StandardMaterial3D_rrati")
+
+[node name="WaterMaker3D2" parent="." instance=ExtResource("8_yjcdx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -77.5, 3.5, -47.5)
+size = Vector3(6, 10, 12)
+material = SubResource("StandardMaterial3D_ursom")
+water_color = Color(0.921569, 0.207843, 0.309804, 0.576471)
+fog_color = Color(0.721569, 0.0431373, 0.156863, 1)
+
+[node name="WaterMaker3D3" parent="." instance=ExtResource("8_yjcdx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -65, 7, -50.5)
+size = Vector3(5, 17, 6)
+material = SubResource("StandardMaterial3D_4xdw3")
+water_color = Color(0.333333, 0.85098, 0.258824, 0.341176)
+fog_color = Color(0, 0.847059, 0.156863, 0.658824)

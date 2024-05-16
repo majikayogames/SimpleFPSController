@@ -22,6 +22,8 @@ var headbob_time := 0.0
 @export var air_accel := 800.0
 @export var air_move_speed := 500.0
 
+@export var swim_up_speed := 10.0
+
 var wish_dir := Vector3.ZERO
 var cam_aligned_wish_dir := Vector3.ZERO
 
@@ -147,6 +149,24 @@ func _snap_up_stairs_check(delta) -> bool:
 			_snapped_to_stairs_last_frame = true
 			return true
 	return false
+
+# Returns true if player is in water, don't run normal air/ground physics in that case.
+func _handle_water_physics(delta) -> bool:
+	if get_tree().get_nodes_in_group("water_area").all(func(area): return !area.overlaps_body(self)):
+		return false
+	
+	if not is_on_floor():
+		velocity.y -= ProjectSettings.get_setting("physics/3d/default_gravity") * 0.1 * delta
+	
+	self.velocity += cam_aligned_wish_dir * get_move_speed() * delta
+	
+	if Input.is_action_pressed("jump"):
+		self.velocity.y += swim_up_speed * delta
+	
+	# Dampen velocity when in water
+	self.velocity = self.velocity.lerp(Vector3.ZERO, 2 * delta)
+	
+	return true
 
 @onready var _original_capsule_height = $CollisionShape3D.shape.height
 func _handle_crouch(delta) -> void:
@@ -276,12 +296,13 @@ func _physics_process(delta):
 	_handle_crouch(delta)
 	
 	if not _handle_noclip(delta):
-		if is_on_floor() or _snapped_to_stairs_last_frame:
-			if Input.is_action_just_pressed("jump") or (auto_bhop and Input.is_action_pressed("jump")):
-				self.velocity.y = jump_velocity
-			_handle_ground_physics(delta)
-		else:
-			_handle_air_physics(delta)
+		if not _handle_water_physics(delta):
+			if is_on_floor() or _snapped_to_stairs_last_frame:
+				if Input.is_action_just_pressed("jump") or (auto_bhop and Input.is_action_pressed("jump")):
+					self.velocity.y = jump_velocity
+				_handle_ground_physics(delta)
+			else:
+				_handle_air_physics(delta)
 		
 		if not _snap_up_stairs_check(delta):
 			# Because _snap_up_stairs_check moves the body manually, don't call move_and_slide
