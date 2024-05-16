@@ -83,6 +83,7 @@ script = ExtResource("3_b5ytn")
 
 [node name="WaterRippleOverlay" type="TextureRect" parent="."]
 unique_name_in_owner = true
+visible = false
 z_index = -10
 z_as_relative = false
 material = SubResource("ShaderMaterial_ccyp1")
