@@ -17,7 +17,7 @@ boot_splash/show_image=false
 
 [display]
 
-window/size/mode=3
+window/size/mode=4
 window/volumetric_fog/volume_depth=256
 window/volumetric_fog/volume_size=256
 
@@ -93,6 +93,7 @@ crouch={
 
 [physics]
 
+3d/physics_engine="GodotPhysics3D"
 3d/default_gravity=12.0
 
 [rendering]

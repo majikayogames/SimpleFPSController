@@ -9,6 +9,7 @@
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_airj4"]
 
 [node name="CharacterBody3D" type="CharacterBody3D"]
+platform_on_leave = 2
 script = ExtResource("1_o4fvy")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
