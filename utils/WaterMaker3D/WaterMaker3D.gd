@@ -46,7 +46,7 @@ func _process(delta):
 	%FogVolume.fade_distance = self.fog_fade_dist
 	if not Engine.is_editor_hint():
 		if should_draw_camera_underwater_effect():
-			#%WaterRippleOverlay.visible = true
+			%WaterRippleOverlay.visible = true
 			%FogVolume.material.set_shader_parameter("edge_fade", 0.1)
 			last_frame_drew_underwater_effect = Engine.get_process_frames()
 		else:
