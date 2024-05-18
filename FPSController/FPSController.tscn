@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://f6kx848g5bco"]
+[gd_scene load_steps=7 format=3 uid="uid://f6kx848g5bco"]
 
 [ext_resource type="Script" path="res://FPSController/FPSController.gd" id="1_o4fvy"]
 [ext_resource type="PackedScene" uid="uid://gvm0me264r32" path="res://models/disguise-glasses.glb" id="2_jjg3x"]
@@ -7,6 +7,9 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_60k8k"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_airj4"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_7ebel"]
+radius = 0.25
 
 [node name="CharacterBody3D" type="CharacterBody3D"]
 platform_on_leave = 2
@@ -41,6 +44,13 @@ unique_name_in_owner = true
 [node name="Camera3D" type="Camera3D" parent="HeadOriginalPosition/Head/CameraSmooth"]
 unique_name_in_owner = true
 cull_mask = 1048573
+
+[node name="InteractShapeCast3D" type="ShapeCast3D" parent="HeadOriginalPosition/Head/CameraSmooth/Camera3D"]
+unique_name_in_owner = true
+shape = SubResource("SphereShape3D_7ebel")
+target_position = Vector3(0, 0, -2.235)
+max_results = 2
+collide_with_areas = true
 
 [node name="StairsAheadRayCast3D" type="RayCast3D" parent="."]
 unique_name_in_owner = true

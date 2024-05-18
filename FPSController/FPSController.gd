@@ -90,6 +90,19 @@ func _handle_controller_look_input(delta):
 
 func _process(delta):
 	_handle_controller_look_input(delta)
+	if get_interactable_component_at_shapecast():
+		get_interactable_component_at_shapecast().hover_cursor(self)
+		if Input.is_action_just_pressed("interact"):
+			get_interactable_component_at_shapecast().interact_with()
+
+func get_interactable_component_at_shapecast() -> InteractableComponent:
+	for i in %InteractShapeCast3D.get_collision_count():
+		# Allow colliding with player
+		if i > 0 and %InteractShapeCast3D.get_collider(0) != $".":
+			return null
+		if %InteractShapeCast3D.get_collider(i).get_node_or_null("InteractableComponent") is InteractableComponent:
+			return %InteractShapeCast3D.get_collider(i).get_node_or_null("InteractableComponent")
+	return null
 
 var _saved_camera_global_pos = null
 func _save_camera_pos_for_smoothing():
@@ -234,7 +247,7 @@ func _handle_noclip(delta) -> bool:
 	
 	return true
 
-func clip_velocity(normal: Vector3, overbounce : float, delta : float) -> void:
+func clip_velocity(normal: Vector3, overbounce : float, _delta : float) -> void:
 	# When strafing into wall, + gravity, velocity will be pointing much in the opposite direction of the normal
 	# So with this code, we will back up and off of the wall, cancelling out our strafe + gravity, allowing surf.
 	var backoff := self.velocity.dot(normal) * overbounce

@@ -23,7 +23,6 @@ func should_draw_camera_underwater_effect():
 	
 	%CameraPosShapeCast3D.global_position = camera.global_position
 	%CameraPosShapeCast3D.force_shapecast_update()
-	var camera_is_in_water_area3d := false
 	for i in %CameraPosShapeCast3D.get_collision_count():
 		if %CameraPosShapeCast3D.get_collider(i) == %SwimmableArea3D:
 			return true
