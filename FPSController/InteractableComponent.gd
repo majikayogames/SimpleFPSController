@@ -16,7 +16,7 @@ func hover_cursor(character : CharacterBody3D):
 func get_character_hovered_by_cur_camera() -> CharacterBody3D:
 	for character in characters_hovering.keys():
 		var cur_cam = get_viewport().get_camera_3d() if get_viewport() else null
-		if character.is_ancestor_of(cur_cam):
+		if cur_cam != null and character.is_ancestor_of(cur_cam):
 			return character
 	return null
 
