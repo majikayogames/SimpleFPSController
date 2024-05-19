@@ -93,7 +93,7 @@ func _process(delta):
 	if get_interactable_component_at_shapecast():
 		get_interactable_component_at_shapecast().hover_cursor(self)
 		if Input.is_action_just_pressed("interact"):
-			get_interactable_component_at_shapecast().interact_with()
+			get_interactable_component_at_shapecast().interact_with(self)
 
 func get_interactable_component_at_shapecast() -> InteractableComponent:
 	for i in %InteractShapeCast3D.get_collision_count():
