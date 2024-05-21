@@ -23,6 +23,7 @@ var headbob_time := 0.0
 @export var air_move_speed := 500.0
 
 @export var swim_up_speed := 10.0
+@export var climb_speed := 7.0
 
 var wish_dir := Vector3.ZERO
 var cam_aligned_wish_dir := Vector3.ZERO
@@ -131,6 +132,8 @@ func _push_away_rigid_bodies():
 			# Objects with more mass than us should be harder to push. But doesn't really make sense to push faster than we are going
 			const MY_APPROX_MASS_KG = 80.0
 			var mass_ratio = min(1., MY_APPROX_MASS_KG / c.get_collider().mass)
+			if mass_ratio < 0.5:
+				continue
 			# Don't push object from above/below
 			push_dir.y = 0
 			# 5.0 is a magic number, adjust to your needs
@@ -180,6 +183,77 @@ func _snap_up_stairs_check(delta) -> bool:
 			_snapped_to_stairs_last_frame = true
 			return true
 	return false
+
+var _cur_ladder_climbing : Area3D = null
+func _handle_ladder_physics(delta) -> bool:
+	# Keep track of whether already on ladder. If not already, check if overlapping a ladder area3d.
+	var was_climbing_ladder := _cur_ladder_climbing and _cur_ladder_climbing.overlaps_body(self)
+	if not was_climbing_ladder:
+		_cur_ladder_climbing = null
+		for ladder in get_tree().get_nodes_in_group("ladder_area3d"):
+			if ladder.overlaps_body(self):
+				_cur_ladder_climbing = ladder
+				break
+	if _cur_ladder_climbing == null:
+		return false
+	
+	# Set up variables. Most of this is going to be dependent on the player's relative position/velocity/input to the ladder.
+	var ladder_gtransform : Transform3D = _cur_ladder_climbing.global_transform
+	var pos_rel_to_ladder := ladder_gtransform.affine_inverse() * self.global_position
+	
+	var forward_move := Input.get_action_strength("up") - Input.get_action_strength("down")
+	var side_move := Input.get_action_strength("right") - Input.get_action_strength("left")
+	var ladder_forward_move = ladder_gtransform.affine_inverse().basis * %Camera3D.global_transform.basis * Vector3(0, 0, -forward_move)
+	var ladder_side_move = ladder_gtransform.affine_inverse().basis * %Camera3D.global_transform.basis * Vector3(side_move, 0, 0)
+	
+	# Strafe velocity is simple. Just take x component rel to ladder of both
+	var ladder_strafe_vel : float = climb_speed * (ladder_side_move.x + ladder_forward_move.x)
+	# For climb velocity, there are a few things to take into account:
+	# If strafing directly into the ladder, go up, if strafing away, go down
+	var ladder_climb_vel : float = climb_speed * -ladder_side_move.z
+	# When pressing forward & facing the ladder, the player likely wants to move up. Vice versa with down.
+	# So we will bias the direction (up/down) towards where we are looking by 45 degrees to give a greater margin for up/down detect.
+	var cam_forward_amount : float = %Camera3D.basis.z.dot(_cur_ladder_climbing.basis.z)
+	var up_wish := Vector3.UP.rotated(Vector3(1,0,0), deg_to_rad(-45 * cam_forward_amount)).dot(ladder_forward_move)
+	ladder_climb_vel += climb_speed * up_wish
+	
+	# Only begin climbing ladders when moving towards them & prevent sticking to top of ladder when dismounting
+	# Trying to best match the player's intention when climbing on ladder
+	var should_dismount = false
+	if not was_climbing_ladder:
+		var mounting_from_top = pos_rel_to_ladder.y > _cur_ladder_climbing.get_node("TopOfLadder").position.y
+		if mounting_from_top:
+			# They could be trying to get on from the top of the ladder, or trying to leave the ladder.
+			if ladder_climb_vel > 0: should_dismount = true
+		else:
+			# If not mounting from top, they are either falling or on floor.
+			# In which case, only stick to ladder if intentionally moving towards
+			if (ladder_gtransform.affine_inverse().basis * wish_dir).z >= 0: should_dismount = true
+		# Only stick to ladder if very close. Helps make it easier to get off top & prevents camera jitter
+		if abs(pos_rel_to_ladder.z) > 0.1: should_dismount = true
+	
+	# Let player step off onto floor
+	if is_on_floor() and ladder_climb_vel <= 0: should_dismount = true
+	
+	if should_dismount:
+		_cur_ladder_climbing = null
+		return false
+	
+	# Allow jump off ladder mid climb
+	if was_climbing_ladder and Input.is_action_just_pressed("jump"):
+		self.velocity = _cur_ladder_climbing.global_transform.basis.z * jump_velocity * 1.5
+		_cur_ladder_climbing = null
+		return false
+	
+	self.velocity = ladder_gtransform.basis * Vector3(ladder_strafe_vel, ladder_climb_vel, 0)
+	#self.velocity = self.velocity.limit_length(climb_speed) # Uncomment to turn off ladder boosting
+	
+	# Snap player onto ladder
+	pos_rel_to_ladder.z = 0
+	self.global_position = ladder_gtransform * pos_rel_to_ladder
+	
+	move_and_slide()
+	return true
 
 # Returns true if player is in water, don't run normal air/ground physics in that case.
 func _handle_water_physics(delta) -> bool:
@@ -326,7 +400,7 @@ func _physics_process(delta):
 	
 	_handle_crouch(delta)
 	
-	if not _handle_noclip(delta):
+	if not _handle_noclip(delta) and not _handle_ladder_physics(delta):
 		if not _handle_water_physics(delta):
 			if is_on_floor() or _snapped_to_stairs_last_frame:
 				if Input.is_action_just_pressed("jump") or (auto_bhop and Input.is_action_pressed("jump")):
