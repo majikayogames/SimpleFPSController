@@ -20,7 +20,7 @@ func get_character_hovered_by_cur_camera() -> CharacterBody3D:
 			return character
 	return null
 
-func _process(delta):
+func _process(_delta):
 	for character in characters_hovering.keys():
 		if Engine.get_process_frames() - characters_hovering[character] > 1:
 			characters_hovering.erase(character)

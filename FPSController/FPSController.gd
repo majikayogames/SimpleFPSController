@@ -186,7 +186,7 @@ func _snap_up_stairs_check(delta) -> bool:
 	return false
 
 var _cur_ladder_climbing : Area3D = null
-func _handle_ladder_physics(delta) -> bool:
+func _handle_ladder_physics() -> bool:
 	# Keep track of whether already on ladder. If not already, check if overlapping a ladder area3d.
 	var was_climbing_ladder := _cur_ladder_climbing and _cur_ladder_climbing.overlaps_body(self)
 	if not was_climbing_ladder:
@@ -293,7 +293,7 @@ func _handle_crouch(delta) -> void:
 		%Head.position.y -= result.get_travel().y
 		%Head.position.y = clampf(%Head.position.y, -CROUCH_TRANSLATE, 0)
 	
-	%Head.position.y = move_toward(%Head.position.y, -CROUCH_TRANSLATE if is_crouched else 0, 7.0 * delta)
+	%Head.position.y = move_toward(%Head.position.y, -CROUCH_TRANSLATE if is_crouched else 0.0, 7.0 * delta)
 	$CollisionShape3D.shape.height = _original_capsule_height - CROUCH_TRANSLATE if is_crouched else _original_capsule_height
 	$CollisionShape3D.position.y = $CollisionShape3D.shape.height / 2
 	# Visual for tutorial
@@ -400,7 +400,7 @@ func _physics_process(delta):
 	
 	_handle_crouch(delta)
 	
-	if not _handle_noclip(delta) and not _handle_ladder_physics(delta):
+	if not _handle_noclip(delta) and not _handle_ladder_physics():
 		if not _handle_water_physics(delta):
 			if is_on_floor() or _snapped_to_stairs_last_frame:
 				if Input.is_action_just_pressed("jump") or (auto_bhop and Input.is_action_pressed("jump")):
