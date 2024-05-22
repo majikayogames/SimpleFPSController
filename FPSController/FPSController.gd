@@ -213,7 +213,7 @@ func _handle_ladder_physics(delta) -> bool:
 	var ladder_climb_vel : float = climb_speed * -ladder_side_move.z
 	# When pressing forward & facing the ladder, the player likely wants to move up. Vice versa with down.
 	# So we will bias the direction (up/down) towards where we are looking by 45 degrees to give a greater margin for up/down detect.
-	var cam_forward_amount : float = %Camera3D.basis.z.dot(_cur_ladder_climbing.basis.z)
+	var cam_forward_amount : float = %Camera3D.global_basis.z.dot(_cur_ladder_climbing.global_basis.z)
 	var up_wish := Vector3.UP.rotated(Vector3(1,0,0), deg_to_rad(-45 * cam_forward_amount)).dot(ladder_forward_move)
 	ladder_climb_vel += climb_speed * up_wish
 	
