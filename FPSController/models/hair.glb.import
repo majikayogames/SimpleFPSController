@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://dfguof2ejr8mp"
-path="res://.godot/imported/hair.glb-12683dfcf206a8450bf26743c9afe071.scn"
+path="res://.godot/imported/hair.glb-10b444ab346ebdc119eae6e84e46f84c.scn"
 
 [deps]
 
-source_file="res://models/hair.glb"
-dest_files=["res://.godot/imported/hair.glb-12683dfcf206a8450bf26743c9afe071.scn"]
+source_file="res://FPSController/models/hair.glb"
+dest_files=["res://.godot/imported/hair.glb-10b444ab346ebdc119eae6e84e46f84c.scn"]
 
 [params]
 

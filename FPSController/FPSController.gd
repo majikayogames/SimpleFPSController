@@ -132,7 +132,8 @@ func _push_away_rigid_bodies():
 			# Objects with more mass than us should be harder to push. But doesn't really make sense to push faster than we are going
 			const MY_APPROX_MASS_KG = 80.0
 			var mass_ratio = min(1., MY_APPROX_MASS_KG / c.get_collider().mass)
-			if mass_ratio < 0.5:
+			# Optional add: Don't push object at all if it's 4x heavier or more
+			if mass_ratio < 0.25:
 				continue
 			# Don't push object from above/below
 			push_dir.y = 0
