@@ -1,7 +1,8 @@
-[gd_scene load_steps=86 format=3 uid="uid://cumlkudt7n44b"]
+[gd_scene load_steps=84 format=3 uid="uid://cumlkudt7n44b"]
 
 [ext_resource type="Material" uid="uid://bk7nbd8td4gb1" path="res://textures/grey_checkerboard_mat.tres" id="1_1bstl"]
 [ext_resource type="PackedScene" uid="uid://f6kx848g5bco" path="res://FPSController/FPSController.tscn" id="1_2lyst"]
+[ext_resource type="PackedScene" uid="uid://b1ovqgjwms7u4" path="res://ladder.tscn" id="2_3t0s4"]
 [ext_resource type="Texture2D" uid="uid://d1uelfks0ip1w" path="res://textures/grid_image.png" id="2_uym2f"]
 [ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://utils/CSGStairMaker3D.tscn" id="3_2shvn"]
 [ext_resource type="ArrayMesh" uid="uid://dry23jeo6prdo" path="res://models/terrain_mesh.mesh" id="4_t8olv"]
@@ -21,16 +22,6 @@ sky = SubResource("Sky_hfysu")
 tonemap_mode = 2
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_35iws"]
-albedo_color = Color(0.447059, 0.447059, 0.447059, 1)
-metallic = 1.0
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_umrbm"]
-size = Vector3(0.1, 15, 1.4)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_youqv"]
-size = Vector3(1.4, 15, 0.8)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hbddn"]
 resource_name = "Material.002"
@@ -536,113 +527,7 @@ shadow_enabled = true
 [node name="CharacterBody3D" parent="." instance=ExtResource("1_2lyst")]
 platform_floor_layers = 4294967294
 
-[node name="Ladder" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -68, 6.522, 2.5)
-
-[node name="LadderVisual" type="Node3D" parent="Ladder"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
-
-[node name="Rung1" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, -7, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung2" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, -6, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung3" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, -5, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung4" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, -4, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung5" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, -3, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung6" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, -2, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung7" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, -1, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung8" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung9" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 1, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung10" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 2, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung11" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 3, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung12" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 4, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung13" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 5, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung14" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 6, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="Rung15" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 7, 0)
-size = Vector3(0.1, 0.2, 1)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="LHandle" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0500028, 4.76837e-07, 0.599998)
-size = Vector3(0.1, 15, 0.2)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="RHandle" type="CSGBox3D" parent="Ladder/LadderVisual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0500028, 4.76837e-07, -0.599998)
-size = Vector3(0.1, 15, 0.2)
-material = SubResource("StandardMaterial3D_35iws")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="Ladder"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ladder/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0500002, 0, 0)
-shape = SubResource("BoxShape3D_umrbm")
-
-[node name="LadderArea3D" type="Area3D" parent="Ladder" groups=["ladder_area3d"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ladder/LadderArea3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
-shape = SubResource("BoxShape3D_youqv")
-
-[node name="TopOfLadder" type="Node3D" parent="Ladder/LadderArea3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.599998, 7.3, 0)
+[node name="Ladder" parent="." instance=ExtResource("2_3t0s4")]
 
 [node name="Weights" type="Node3D" parent="."]
 
