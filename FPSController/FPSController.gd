@@ -161,7 +161,6 @@ func _snap_down_to_stairs_check() -> void:
 
 func _snap_up_stairs_check(delta) -> bool:
 	if not is_on_floor() and not _snapped_to_stairs_last_frame: return false
-	if velocity.y > 0: return false
 	var expected_move_motion = self.velocity * Vector3(1,0,1) * delta
 	var step_pos_with_clearance = self.global_transform.translated(expected_move_motion + Vector3(0, MAX_STEP_HEIGHT * 2, 0))
 	# Run a body_test_motion slightly above the pos we expect to move to, towards the floor.
