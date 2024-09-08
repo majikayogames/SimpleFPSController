@@ -110,6 +110,7 @@ shape = SubResource("BoxShape3D_umrbm")
 
 [node name="LadderArea3D" type="Area3D" parent="." groups=["ladder_area3d"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7)
+collision_mask = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LadderArea3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)

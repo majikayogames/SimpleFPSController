@@ -25,6 +25,15 @@ var headbob_time := 0.0
 @export var swim_up_speed := 10.0
 @export var climb_speed := 7.0
 
+# Camera options
+enum CameraStyle {
+	FIRST_PERSON, THIRD_PERSON_VERTICAL_LOOK, THIRD_PERSON_FREE_LOOK
+}
+@export var camera_style : CameraStyle = CameraStyle.FIRST_PERSON :
+	set(v):
+		camera_style = v
+		_update_camera()
+
 var wish_dir := Vector3.ZERO
 var cam_aligned_wish_dir := Vector3.ZERO
 
@@ -48,6 +57,8 @@ func _ready():
 	for child in %WorldModel.find_children("*", "VisualInstance3D"):
 		child.set_layer_mask_value(1, false)
 		child.set_layer_mask_value(2, true)
+	
+	_update_camera()
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
@@ -57,15 +68,38 @@ func _unhandled_input(event):
 	
 	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		if event is InputEventMouseMotion:
-			rotate_y(-event.relative.x * look_sensitivity)
+			if camera_style == CameraStyle.THIRD_PERSON_FREE_LOOK:
+				# Rotate the camera orbit rather than the player with mouse in free look mode
+				%ThirdPersonCamOrbitYaw.rotate_y(-event.relative.x * look_sensitivity)
+			else:
+				%ThirdPersonCamOrbitYaw.rotation.y = 0
+				rotate_y(-event.relative.x * look_sensitivity)
+			# First person look up and down
 			%Camera3D.rotate_x(-event.relative.y * look_sensitivity)
 			%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+			# Third person look up and down
+			%ThirdPersonCamOrbitPitch.rotate_x(-event.relative.y * look_sensitivity)
+			%ThirdPersonCamOrbitPitch.rotation.x = clamp(%ThirdPersonCamOrbitPitch.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 	
 	if event is InputEventMouseButton and event.is_pressed():
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			noclip_speed_mult = min(100.0, noclip_speed_mult * 1.1)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			noclip_speed_mult = max(0.1, noclip_speed_mult * 0.9)
+
+func get_active_camera() -> Camera3D:
+	if camera_style == CameraStyle.FIRST_PERSON:
+		return %Camera3D
+	else:
+		return %ThirdPersonCamera3D
+
+func _update_camera():
+	if not is_inside_tree():
+		return
+	var cameras = [%Camera3D, %ThirdPersonCamera3D]
+	if not cameras.any(func(c : Camera3D): return c.current):
+		return # Don't update camera if none are current, maybe on cutscene cam or something.
+	get_active_camera().current = true
 
 func _headbob_effect(delta):
 	headbob_time += delta * self.velocity.length()
@@ -85,9 +119,17 @@ func _handle_controller_look_input(delta):
 	else:
 		_cur_controller_look = _cur_controller_look.lerp(target_look, 5.0 * delta)
 	
-	rotate_y(-_cur_controller_look.x * controller_look_sensitivity) # turn left and right
-	%Camera3D.rotate_x(_cur_controller_look.y * controller_look_sensitivity) # look up and down
-	%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90)) # clamp up and down range
+	if camera_style == CameraStyle.THIRD_PERSON_VERTICAL_LOOK or camera_style == CameraStyle.FIRST_PERSON:
+		rotate_y(-_cur_controller_look.x * controller_look_sensitivity) # turn left and right
+	else:
+		%ThirdPersonCamOrbitYaw.rotate_y(-_cur_controller_look.x * controller_look_sensitivity) # turn left and right
+	
+	if camera_style == CameraStyle.THIRD_PERSON_FREE_LOOK or camera_style == CameraStyle.THIRD_PERSON_VERTICAL_LOOK:
+		%ThirdPersonCamOrbitPitch.rotate_x(_cur_controller_look.y * controller_look_sensitivity)
+		%ThirdPersonCamOrbitPitch.rotation.x = clamp(%ThirdPersonCamOrbitPitch.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+	else:
+		%Camera3D.rotate_x(_cur_controller_look.y * controller_look_sensitivity) # look up and down
+		%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90)) # clamp up and down range
 
 func _process(delta):
 	_handle_controller_look_input(delta)
@@ -95,6 +137,12 @@ func _process(delta):
 		get_interactable_component_at_shapecast().hover_cursor(self)
 		if Input.is_action_just_pressed("interact"):
 			get_interactable_component_at_shapecast().interact_with(self)
+	if camera_style == CameraStyle.THIRD_PERSON_FREE_LOOK and wish_dir.length():
+		# In free look mode, the camera determines move dir, not char direction. So change char direction per velocity.
+		var add_rotation_y = (-self.global_transform.basis.z).signed_angle_to(wish_dir.normalized(), Vector3.UP)
+		var rot_towards = lerp_angle(self.global_rotation.y, self.global_rotation.y + add_rotation_y, max(0.1, min(wish_dir.length(), abs(add_rotation_y/TAU)))) - self.global_rotation.y
+		self.rotation.y += rot_towards
+		%ThirdPersonCamOrbitYaw.rotation.y -= rot_towards
 
 func get_interactable_component_at_shapecast() -> InteractableComponent:
 	for i in %InteractShapeCast3D.get_collision_count():
@@ -206,8 +254,8 @@ func _handle_ladder_physics() -> bool:
 	
 	var forward_move := Input.get_action_strength("up") - Input.get_action_strength("down")
 	var side_move := Input.get_action_strength("right") - Input.get_action_strength("left")
-	var ladder_forward_move = ladder_gtransform.affine_inverse().basis * %Camera3D.global_transform.basis * Vector3(0, 0, -forward_move)
-	var ladder_side_move = ladder_gtransform.affine_inverse().basis * %Camera3D.global_transform.basis * Vector3(side_move, 0, 0)
+	var ladder_forward_move = ladder_gtransform.affine_inverse().basis * get_active_camera().global_transform.basis * Vector3(0, 0, -forward_move)
+	var ladder_side_move = ladder_gtransform.affine_inverse().basis * get_active_camera().global_transform.basis * Vector3(side_move, 0, 0)
 	
 	# Strafe velocity is simple. Just take x component rel to ladder of both
 	var ladder_strafe_vel : float = climb_speed * (ladder_side_move.x + ladder_forward_move.x)
@@ -299,10 +347,10 @@ func _handle_crouch(delta) -> void:
 	$CollisionShape3D.shape.height = _original_capsule_height - CROUCH_TRANSLATE if is_crouched else _original_capsule_height
 	$CollisionShape3D.position.y = $CollisionShape3D.shape.height / 2
 	# Visual for tutorial
-	#$WorldModel/MeshInstance3D.mesh.height = $CollisionShape3D.shape.height
-	#$WorldModel/MeshInstance3D.position.y = $CollisionShape3D.position.y
-	#$WorldModel/WigglyHair.position.y = $CollisionShape3D.shape.height - 0.302
-	#$"WorldModel/disguise-glasses".position.y = $CollisionShape3D.shape.height - 0.9
+	$WorldModel/MeshInstance3D.mesh.height = $CollisionShape3D.shape.height
+	$WorldModel/MeshInstance3D.position.y = $CollisionShape3D.position.y
+	$WorldModel/WigglyHair.position.y = $CollisionShape3D.shape.height - 0.302
+	$"WorldModel/disguise-glasses".position.y = $CollisionShape3D.shape.height - 0.9
 
 func _handle_noclip(delta) -> bool:
 	if Input.is_action_just_pressed("_noclip") and OS.has_feature("debug"):
@@ -395,10 +443,15 @@ func _handle_ground_physics(delta) -> void:
 func _physics_process(delta):
 	if is_on_floor(): _last_frame_was_on_floor = Engine.get_physics_frames()
 	
+	_update_camera()
+	
 	var input_dir = Input.get_vector("left", "right", "up", "down").normalized()
 	# Depending on which way you have you character facing, you may have to negate the input directions
 	wish_dir = self.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
-	cam_aligned_wish_dir = %Camera3D.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
+	cam_aligned_wish_dir = get_active_camera().global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
+	if camera_style == CameraStyle.THIRD_PERSON_FREE_LOOK:
+		wish_dir = %ThirdPersonCamOrbitYaw.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
+		cam_aligned_wish_dir = %ThirdPersonCamera3D.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	
 	_handle_crouch(delta)
 	
