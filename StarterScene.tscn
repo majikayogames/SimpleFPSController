@@ -1,4 +1,4 @@
-[gd_scene load_steps=84 format=4 uid="uid://cumlkudt7n44b"]
+[gd_scene load_steps=85 format=4 uid="uid://cumlkudt7n44b"]
 
 [ext_resource type="Material" uid="uid://bk7nbd8td4gb1" path="res://textures/grey_checkerboard_mat.tres" id="1_1bstl"]
 [ext_resource type="PackedScene" uid="uid://f6kx848g5bco" path="res://FPSController/FPSController.tscn" id="1_2lyst"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://b28c62e3f23vb" path="res://textures/kenney-orange-checkerboard-cc0.png" id="6_s6lf8"]
 [ext_resource type="PackedScene" uid="uid://ca0wevg1lb4rx" path="res://utils/WaterMaker3D/WaterMaker3D.tscn" id="8_yjcdx"]
 [ext_resource type="Script" path="res://FPSController/InteractableComponent.gd" id="9_epvnr"]
+[ext_resource type="PackedScene" uid="uid://do2dlfcvouiwc" path="res://models/swag_capsule.tscn" id="12_nwcsw"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bwjpn"]
 
@@ -1028,6 +1029,9 @@ libraries = {
 
 [node name="InteractableComponent" type="Node" parent="AnimatableBody3D"]
 script = ExtResource("9_epvnr")
+
+[node name="SwagCapsule" parent="." instance=ExtResource("12_nwcsw")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 1.14304, 0.0219994, -61.7708)
 
 [connection signal="interacted" from="StaticBody3D/InteractableComponent" to="AnimatableBody3D" method="toggle_open"]
 [connection signal="interacted" from="StaticBody3D/InteractableComponent" to="StaticBody3D/button/AnimationPlayer" method="play" binds= ["ButtonPress"]]

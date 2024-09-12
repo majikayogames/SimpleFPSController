@@ -11,11 +11,11 @@ const HEADBOB_FREQUENCY = 2.4
 var headbob_time := 0.0
 
 # Ground movement settings
-@export var walk_speed := 7.0
+@export var walk_speed := 5.0
 @export var sprint_speed := 8.5
-@export var ground_accel := 14.0
-@export var ground_decel := 10.0
-@export var ground_friction := 6.0
+@export var ground_accel := 11.0
+@export var ground_decel := 7.0
+@export var ground_friction := 3.5
 
 # Air movement settings. Need to tweak these to get the feeling dialed in.
 @export var air_cap := 0.85 # Can surf steeper ramps if this is higher, makes it easier to stick and bhop
@@ -50,7 +50,7 @@ var _last_frame_was_on_floor = -INF
 
 func get_move_speed() -> float:
 	if is_crouched:
-		return walk_speed * 0.8
+		return walk_speed * 0.6
 	return sprint_speed if Input.is_action_pressed("sprint") else walk_speed
 
 func _ready():
@@ -131,6 +131,33 @@ func _handle_controller_look_input(delta):
 		%Camera3D.rotate_x(_cur_controller_look.y * controller_look_sensitivity) # look up and down
 		%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90)) # clamp up and down range
 
+@onready var animation_tree : AnimationTree = $"WorldModel/desert droid container/AnimationTree"
+@onready var state_machine_playback : AnimationNodeStateMachinePlayback = $"WorldModel/desert droid container/AnimationTree".get("parameters/playback")
+func update_animations():
+	if noclip or (not is_on_floor() and not _snapped_to_stairs_last_frame):
+		if is_crouched:
+			state_machine_playback.travel("MidJumpCrouch")
+		else:
+			state_machine_playback.travel("MidJump")
+		return
+	
+	var rel_vel = self.global_basis.inverse() * ((self.velocity * Vector3(1,0,1)) / get_move_speed())
+	var rel_vel_xz = Vector2(rel_vel.x, -rel_vel.z)
+	
+	#print(rel_vel_xz)
+	if Input.is_action_pressed("crouch"):
+		state_machine_playback.travel("CrouchBlendSpace2D")
+		animation_tree.set("parameters/CrouchBlendSpace2D/blend_position", rel_vel_xz)
+	elif Input.is_action_pressed("sprint"):
+		state_machine_playback.travel("RunBlendSpace2D")
+		animation_tree.set("parameters/RunBlendSpace2D/blend_position", rel_vel_xz)
+	else:
+		state_machine_playback.travel("WalkBlendSpace2D")
+		#print(rel_vel_xz)
+		#print(state_machine_playback.get("parameters"))
+		animation_tree.set("parameters/WalkBlendSpace2D/blend_position", rel_vel_xz)
+		#animation_tree.set("parameters/blendspace/blend_position", rel_vel_xz)
+
 func _process(delta):
 	_handle_controller_look_input(delta)
 	if get_interactable_component_at_shapecast():
@@ -143,6 +170,8 @@ func _process(delta):
 		var rot_towards = lerp_angle(self.global_rotation.y, self.global_rotation.y + add_rotation_y, max(0.1, min(wish_dir.length(), abs(add_rotation_y/TAU)))) - self.global_rotation.y
 		self.rotation.y += rot_towards
 		%ThirdPersonCamOrbitYaw.rotation.y -= rot_towards
+	
+	update_animations()
 
 func get_interactable_component_at_shapecast() -> InteractableComponent:
 	for i in %InteractShapeCast3D.get_collision_count():
@@ -347,10 +376,10 @@ func _handle_crouch(delta) -> void:
 	$CollisionShape3D.shape.height = _original_capsule_height - CROUCH_TRANSLATE if is_crouched else _original_capsule_height
 	$CollisionShape3D.position.y = $CollisionShape3D.shape.height / 2
 	# Visual for tutorial
-	$WorldModel/MeshInstance3D.mesh.height = $CollisionShape3D.shape.height
-	$WorldModel/MeshInstance3D.position.y = $CollisionShape3D.position.y
-	$WorldModel/WigglyHair.position.y = $CollisionShape3D.shape.height - 0.302
-	$"WorldModel/disguise-glasses".position.y = $CollisionShape3D.shape.height - 0.9
+	#$WorldModel/MeshInstance3D.mesh.height = $CollisionShape3D.shape.height
+	#$WorldModel/MeshInstance3D.position.y = $CollisionShape3D.position.y
+	#$WorldModel/WigglyHair.position.y = $CollisionShape3D.shape.height - 0.302
+	#$"WorldModel/disguise-glasses".position.y = $CollisionShape3D.shape.height - 0.9
 
 func _handle_noclip(delta) -> bool:
 	if Input.is_action_just_pressed("_noclip") and OS.has_feature("debug"):
