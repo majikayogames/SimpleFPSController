@@ -525,7 +525,7 @@ shadow_enabled = true
 
 [node name="CharacterBody3D" parent="." instance=ExtResource("1_2lyst")]
 platform_floor_layers = 4294967294
-camera_style = 2
+camera_style = 1
 
 [node name="Ladder" parent="." instance=ExtResource("2_3t0s4")]
 

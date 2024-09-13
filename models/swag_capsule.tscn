@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=4 uid="uid://do2dlfcvouiwc"]
 
-[ext_resource type="PackedScene" uid="uid://7dm87wp0hyjg" path="res://FPSController/models/wiggly_hair.tscn" id="1_4qwie"]
+[ext_resource type="PackedScene" uid="uid://7dm87wp0hyjg" path="res://models/wiggly_hair.tscn" id="1_4qwie"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_61jf2"]
 
