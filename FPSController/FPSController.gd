@@ -44,7 +44,7 @@ var is_crouched := false
 var noclip_speed_mult := 3.0
 var noclip := false
 
-const MAX_STEP_HEIGHT = 0.5
+const MAX_STEP_HEIGHT = 0.5 # Raycasts length should match this. StairsAhead one should be slightly longer.
 var _snapped_to_stairs_last_frame := false
 var _last_frame_was_on_floor = -INF
 
