@@ -70,16 +70,16 @@ func _unhandled_input(event):
 		if event is InputEventMouseMotion:
 			if camera_style == CameraStyle.THIRD_PERSON_FREE_LOOK:
 				# Rotate the camera orbit rather than the player with mouse in free look mode
-				%ThirdPersonCamOrbitYaw.rotate_y(-event.relative.x * look_sensitivity)
+				%ThirdPersonOrbitCamYaw.rotate_y(-event.relative.x * look_sensitivity)
 			else:
-				%ThirdPersonCamOrbitYaw.rotation.y = 0
+				%ThirdPersonOrbitCamYaw.rotation.y = 0
 				rotate_y(-event.relative.x * look_sensitivity)
 			# First person look up and down
 			%Camera3D.rotate_x(-event.relative.y * look_sensitivity)
 			%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 			# Third person look up and down
-			%ThirdPersonCamOrbitPitch.rotate_x(-event.relative.y * look_sensitivity)
-			%ThirdPersonCamOrbitPitch.rotation.x = clamp(%ThirdPersonCamOrbitPitch.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+			%ThirdPersonOrbitCamPitch.rotate_x(-event.relative.y * look_sensitivity)
+			%ThirdPersonOrbitCamPitch.rotation.x = clamp(%ThirdPersonOrbitCamPitch.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 	
 	if event is InputEventMouseButton and event.is_pressed():
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
@@ -122,14 +122,10 @@ func _handle_controller_look_input(delta):
 	if camera_style == CameraStyle.THIRD_PERSON_VERTICAL_LOOK or camera_style == CameraStyle.FIRST_PERSON:
 		rotate_y(-_cur_controller_look.x * controller_look_sensitivity) # turn left and right
 	else:
-		%ThirdPersonCamOrbitYaw.rotate_y(-_cur_controller_look.x * controller_look_sensitivity) # turn left and right
-	
-	if camera_style == CameraStyle.THIRD_PERSON_FREE_LOOK or camera_style == CameraStyle.THIRD_PERSON_VERTICAL_LOOK:
-		%ThirdPersonCamOrbitPitch.rotate_x(_cur_controller_look.y * controller_look_sensitivity)
-		%ThirdPersonCamOrbitPitch.rotation.x = clamp(%ThirdPersonCamOrbitPitch.rotation.x, deg_to_rad(-90), deg_to_rad(90))
-	else:
-		%Camera3D.rotate_x(_cur_controller_look.y * controller_look_sensitivity) # look up and down
-		%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90)) # clamp up and down range
+		%ThirdPersonOrbitCamYaw.rotate_y(-_cur_controller_look.x * controller_look_sensitivity) # turn left and right
+	%Camera3D.rotate_x(_cur_controller_look.y * controller_look_sensitivity) # look up and down
+	%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90)) # clamp up and down range
+	%ThirdPersonOrbitCamPitch.rotation.x = %Camera3D.rotation.x
 
 @onready var animation_tree : AnimationTree = $"WorldModel/desert droid container/AnimationTree"
 @onready var state_machine_playback : AnimationNodeStateMachinePlayback = $"WorldModel/desert droid container/AnimationTree".get("parameters/playback")
@@ -167,9 +163,9 @@ func _process(delta):
 	if camera_style == CameraStyle.THIRD_PERSON_FREE_LOOK and wish_dir.length():
 		# In free look mode, the camera determines move dir, not char direction. So change char direction per velocity.
 		var add_rotation_y = (-self.global_transform.basis.z).signed_angle_to(wish_dir.normalized(), Vector3.UP)
-		var rot_towards = lerp_angle(self.global_rotation.y, self.global_rotation.y + add_rotation_y, max(0.1, min(wish_dir.length(), abs(add_rotation_y/TAU)))) - self.global_rotation.y
+		var rot_towards = lerp_angle(self.global_rotation.y, self.global_rotation.y + add_rotation_y, max(0.1,  abs(add_rotation_y/TAU))) - self.global_rotation.y
 		self.rotation.y += rot_towards
-		%ThirdPersonCamOrbitYaw.rotation.y -= rot_towards
+		%ThirdPersonOrbitCamYaw.rotation.y -= rot_towards
 	
 	update_animations()
 
@@ -479,8 +475,7 @@ func _physics_process(delta):
 	wish_dir = self.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	cam_aligned_wish_dir = get_active_camera().global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	if camera_style == CameraStyle.THIRD_PERSON_FREE_LOOK:
-		wish_dir = %ThirdPersonCamOrbitYaw.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
-		cam_aligned_wish_dir = %ThirdPersonCamera3D.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
+		wish_dir = %ThirdPersonOrbitCamYaw.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	
 	_handle_crouch(delta)
 	
