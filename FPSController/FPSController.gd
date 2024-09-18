@@ -140,8 +140,7 @@ func update_animations():
 	var rel_vel = self.global_basis.inverse() * ((self.velocity * Vector3(1,0,1)) / get_move_speed())
 	var rel_vel_xz = Vector2(rel_vel.x, -rel_vel.z)
 	
-	#print(rel_vel_xz)
-	if Input.is_action_pressed("crouch"):
+	if is_crouched:
 		state_machine_playback.travel("CrouchBlendSpace2D")
 		animation_tree.set("parameters/CrouchBlendSpace2D/blend_position", rel_vel_xz)
 	elif Input.is_action_pressed("sprint"):
@@ -149,10 +148,7 @@ func update_animations():
 		animation_tree.set("parameters/RunBlendSpace2D/blend_position", rel_vel_xz)
 	else:
 		state_machine_playback.travel("WalkBlendSpace2D")
-		#print(rel_vel_xz)
-		#print(state_machine_playback.get("parameters"))
 		animation_tree.set("parameters/WalkBlendSpace2D/blend_position", rel_vel_xz)
-		#animation_tree.set("parameters/blendspace/blend_position", rel_vel_xz)
 
 func _process(delta):
 	_handle_controller_look_input(delta)
