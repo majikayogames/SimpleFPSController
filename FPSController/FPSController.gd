@@ -79,7 +79,7 @@ func _unhandled_input(event):
 			%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 			# Third person look up and down
 			%ThirdPersonOrbitCamPitch.rotate_x(-event.relative.y * look_sensitivity)
-			%ThirdPersonOrbitCamPitch.rotation.x = clamp(%ThirdPersonOrbitCamPitch.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+			%ThirdPersonOrbitCamPitch.rotation.x = %Camera3D.rotation.x
 	
 	if event is InputEventMouseButton and event.is_pressed():
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
