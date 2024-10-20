@@ -48,17 +48,29 @@ const MAX_STEP_HEIGHT = 0.5 # Raycasts length should match this. StairsAhead one
 var _snapped_to_stairs_last_frame := false
 var _last_frame_was_on_floor = -INF
 
+const VIEW_MODEL_LAYER = 9
+const WORLD_MODEL_LAYER = 2
+
 func get_move_speed() -> float:
 	if is_crouched:
 		return walk_speed * 0.6
 	return sprint_speed if Input.is_action_pressed("sprint") else walk_speed
 
 func _ready():
-	for child in %WorldModel.find_children("*", "VisualInstance3D"):
-		child.set_layer_mask_value(1, false)
-		child.set_layer_mask_value(2, true)
-	
+	update_view_and_world_model_masks()
 	_update_camera()
+
+func update_view_and_world_model_masks():
+	for child in %WorldModel.find_children("*", "VisualInstance3D", true, false):
+		child.set_layer_mask_value(1, false)
+		child.set_layer_mask_value(WORLD_MODEL_LAYER, true)
+	for child in %ViewModel.find_children("*", "VisualInstance3D", true, false):
+		child.set_layer_mask_value(1, false)
+		child.set_layer_mask_value(VIEW_MODEL_LAYER, true)
+		if child is GeometryInstance3D:
+			child.cast_shadow = false
+	%Camera3D.set_cull_mask_value(WORLD_MODEL_LAYER, false)
+	%ThirdPersonCamera3D.set_cull_mask_value(VIEW_MODEL_LAYER, false)
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
@@ -170,8 +182,9 @@ func get_interactable_component_at_shapecast() -> InteractableComponent:
 		# Allow colliding with player
 		if i > 0 and %InteractShapeCast3D.get_collider(0) != $".":
 			return null
-		if %InteractShapeCast3D.get_collider(i).get_node_or_null("InteractableComponent") is InteractableComponent:
-			return %InteractShapeCast3D.get_collider(i).get_node_or_null("InteractableComponent")
+		var collider = %InteractShapeCast3D.get_collider(i)
+		if collider and collider.get_node_or_null("InteractableComponent") is InteractableComponent:
+			return collider.get_node_or_null("InteractableComponent")
 	return null
 
 var _saved_camera_global_pos = null
