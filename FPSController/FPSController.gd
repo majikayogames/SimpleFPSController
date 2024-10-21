@@ -11,7 +11,7 @@ const HEADBOB_FREQUENCY = 2.4
 var headbob_time := 0.0
 
 # Ground movement settings
-@export var walk_speed := 5.0
+@export var walk_speed := 7.0
 @export var sprint_speed := 8.5
 @export var ground_accel := 11.0
 @export var ground_decel := 7.0
