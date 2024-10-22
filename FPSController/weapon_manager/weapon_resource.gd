@@ -122,6 +122,7 @@ func fire_shot():
 		var obj = raycast.get_collider()
 		var nrml = raycast.get_collision_normal()
 		var pt = raycast.get_collision_point()
+		BulletDecalPool.spawn_bullet_decal(pt, nrml, obj, raycast.global_basis)
 		if obj is RigidBody3D:
 			obj.apply_impulse(-nrml * 5.0 / obj.mass, pt - obj.global_position)
 		if obj.has_method("take_damage"):
