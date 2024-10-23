@@ -14,6 +14,8 @@ extends Node3D
 var current_weapon_view_model : Node3D
 var current_weapon_world_model : Node3D
 
+var current_weapon_view_model_muzzle : Node3D
+
 @onready var audio_stream_player = $AudioStreamPlayer3D
 
 func update_weapon_model() -> void:
@@ -37,6 +39,7 @@ func update_weapon_model() -> void:
 		current_weapon.is_equipped = true
 		if player.has_method("update_view_and_world_model_masks"):
 			player.update_view_and_world_model_masks()
+	current_weapon_view_model_muzzle = view_model_container.find_child("Muzzle", true, false) if current_weapon_view_model else null
 
 ## Call this function on any node to apply the weapon_clip_and_fov_shader.gdshader to all meshes within it.
 func apply_clip_and_fov_shader_to_view_model(node3d : Node3D, fov_or_negative_for_unchanged = -1.0):
@@ -115,6 +118,22 @@ func get_anim() -> String:
 	if not anim_player: return ""
 	return anim_player.current_animation
 
+func show_muzzle_flash():
+	$ViewMuzzleFlash.emitting = true
+
+func make_bullet_trail(target_pos : Vector3):
+	if current_weapon_view_model_muzzle == null:
+		return
+	var muzzle = current_weapon_view_model_muzzle
+	var bullet_dir = (target_pos - muzzle.global_position).normalized()
+	var start_pos = muzzle.global_position + bullet_dir*0.25
+	if (target_pos - start_pos).length() > 3.0:
+		var bullet_tracer = preload("res://FPSController/weapon_manager/bullet_tracer.tscn").instantiate()
+		player.add_sibling(bullet_tracer)
+		bullet_tracer.global_position = start_pos
+		bullet_tracer.target_pos = target_pos
+		bullet_tracer.look_at(target_pos)
+
 func _unhandled_input(event):
 	if current_weapon and is_inside_tree() and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		if event.is_action_pressed("shoot") and allow_shoot:
@@ -133,3 +152,5 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if current_weapon:
 		current_weapon.on_process(delta)
+	if current_weapon_view_model_muzzle:
+		$ViewMuzzleFlash.global_position = current_weapon_view_model_muzzle.global_position

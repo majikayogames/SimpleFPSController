@@ -109,6 +109,7 @@ func reload():
 		current_ammo += can_reload
 		reserve_ammo -= can_reload
 
+var num_shots_fired : int = 0
 func fire_shot():
 	weapon_manager.play_anim(view_shoot_anim)
 	weapon_manager.play_sound(shoot_sound)
@@ -118,15 +119,22 @@ func fire_shot():
 	raycast.target_position = Vector3(0,0,-abs(RAYCAST_DIST))
 	raycast.force_raycast_update()
 	
+	var bullet_target_pos = raycast.global_transform * raycast.target_position
 	if raycast.is_colliding():
 		var obj = raycast.get_collider()
 		var nrml = raycast.get_collision_normal()
 		var pt = raycast.get_collision_point()
+		bullet_target_pos = pt
 		BulletDecalPool.spawn_bullet_decal(pt, nrml, obj, raycast.global_basis)
 		if obj is RigidBody3D:
 			obj.apply_impulse(-nrml * 5.0 / obj.mass, pt - obj.global_position)
 		if obj.has_method("take_damage"):
 			obj.take_damage(self.damage)
 	
+	weapon_manager.show_muzzle_flash()
+	if num_shots_fired % 2 == 0:
+		weapon_manager.make_bullet_trail(bullet_target_pos)
+	
 	last_fire_time = Time.get_ticks_msec()
 	current_ammo -= 1
+	num_shots_fired += 1
