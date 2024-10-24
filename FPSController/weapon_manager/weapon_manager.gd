@@ -140,7 +140,7 @@ func apply_recoil():
 	if current_weapon.spray_pattern:
 		spray_recoil = current_weapon.spray_pattern.get_point_position(int(heat) % current_weapon.spray_pattern.point_count) * 0.0002
 	var random_recoil := Vector2(randf_range(-1, 1), randf_range(-1, 1)) * 0.01
-	var recoil = spray_recoil# + random_recoil
+	var recoil = spray_recoil + random_recoil
 	player.add_recoil(-recoil.y, -recoil.x)
 	heat += 1.0
 
