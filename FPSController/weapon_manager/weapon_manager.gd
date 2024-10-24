@@ -134,6 +134,19 @@ func make_bullet_trail(target_pos : Vector3):
 		bullet_tracer.target_pos = target_pos
 		bullet_tracer.look_at(target_pos)
 
+var heat : float = 0.0
+func apply_recoil():
+	var spray_recoil := Vector2.ZERO
+	if current_weapon.spray_pattern:
+		spray_recoil = current_weapon.spray_pattern.get_point_position(int(heat) % current_weapon.spray_pattern.point_count) * 0.0002
+	var random_recoil := Vector2(randf_range(-1, 1), randf_range(-1, 1)) * 0.01
+	var recoil = spray_recoil# + random_recoil
+	player.add_recoil(-recoil.y, -recoil.x)
+	heat += 1.0
+
+func get_current_recoil():
+	return player.get_current_recoil() if player.has_method("get_current_recoil") else Vector2()
+
 func _unhandled_input(event):
 	if current_weapon and is_inside_tree() and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		if event.is_action_pressed("shoot") and allow_shoot:
@@ -154,3 +167,4 @@ func _process(delta: float) -> void:
 		current_weapon.on_process(delta)
 	if current_weapon_view_model_muzzle:
 		$ViewMuzzleFlash.global_position = current_weapon_view_model_muzzle.global_position
+	heat = max(0.0, heat - delta * 10.0)

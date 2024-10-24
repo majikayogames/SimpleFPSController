@@ -90,7 +90,6 @@ func _unhandled_input(event):
 			%Camera3D.rotate_x(-event.relative.y * look_sensitivity)
 			%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 			# Third person look up and down
-			%ThirdPersonOrbitCamPitch.rotate_x(-event.relative.y * look_sensitivity)
 			%ThirdPersonOrbitCamPitch.rotation.x = %Camera3D.rotation.x
 	
 	if event is InputEventMouseButton and event.is_pressed():
@@ -112,6 +111,33 @@ func _update_camera():
 	if not cameras.any(func(c : Camera3D): return c.current):
 		return # Don't update camera if none are current, maybe on cutscene cam or something.
 	get_active_camera().current = true
+
+var target_recoil := Vector2.ZERO
+var current_recoil := Vector2.ZERO
+const RECOIL_APPLY_SPEED : float = 10.0
+const RECOIL_RECOVER_SPEED : float = 7.0
+
+func add_recoil(pitch: float, yaw: float) -> void:
+	target_recoil.x += pitch
+	target_recoil.y += yaw
+
+func get_current_recoil() -> Vector2:
+	return current_recoil
+
+func update_recoil(delta: float) -> void:
+	# Slowly move target recoil back to 0,0
+	target_recoil = target_recoil.lerp(Vector2.ZERO, RECOIL_RECOVER_SPEED * delta)
+	
+	# Slowly move current recoil to the target recoil
+	var prev_recoil = current_recoil
+	current_recoil = current_recoil.lerp(target_recoil, RECOIL_APPLY_SPEED * delta)
+	var recoil_difference = current_recoil - prev_recoil
+	
+	# Rotate player/camera to current recoil
+	rotate_y(recoil_difference.y)
+	%Camera3D.rotate_x(recoil_difference.x)
+	%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+	%ThirdPersonOrbitCamPitch.rotation.x = %Camera3D.rotation.x
 
 func _headbob_effect(delta):
 	headbob_time += delta * self.velocity.length()
@@ -175,6 +201,7 @@ func _process(delta):
 		self.rotation.y += rot_towards
 		%ThirdPersonOrbitCamYaw.rotation.y -= rot_towards
 	
+	update_recoil(delta)
 	update_animations()
 
 func get_interactable_component_at_shapecast() -> InteractableComponent:

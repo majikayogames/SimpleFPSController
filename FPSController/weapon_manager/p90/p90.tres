@@ -1,9 +1,15 @@
-[gd_resource type="Resource" script_class="WeaponResource" load_steps=12 format=4 uid="uid://dbqqt7myed2m0"]
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=13 format=4 uid="uid://dbqqt7myed2m0"]
 
 [ext_resource type="Script" path="res://FPSController/weapon_manager/weapon_resource.gd" id="1_3onbh"]
 [ext_resource type="AudioStream" uid="uid://b1nxny73maex1" path="res://FPSController/weapon_manager/sounds/cc0-415912__okieactor__heathers-gunshot-effect2.wav" id="2_rqbut"]
 [ext_resource type="AudioStream" uid="uid://cchklld8p4183" path="res://FPSController/weapon_manager/sounds/cc0-377145__nioczkus__pistol-draw-unholster.wav" id="3_h21ie"]
 [ext_resource type="PackedScene" uid="uid://d3umdlg6x0hgy" path="res://FPSController/weapon_manager/p90/p90.glb" id="4_2eu8l"]
+
+[sub_resource type="Curve2D" id="Curve2D_y176m"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 12, -17, 0, 0, 0, 0, 9, -43, 0, 0, 0, 0, 8, -53, 0, 0, 0, 0, 22, -67, 0, 0, 0, 0, 36, -80, 0, 0, 0, 0, 24, -98, 0, 0, 0, 0, 8, -104, 0, 0, 0, 0, 12, -113, 0, 0, 0, 0, 43, -121, 0, 0, 0, 0, 29, -132, 0, 0, 0, 0, 11, -122, 0, 0, 0, 0, -3, -117, 0, 0, 0, 0, -15, -121, 0, 0, 0, 0, -26, -122, 0, 0, 0, 0, -32, -117, 0, 0, 0, 0, -35, -118, 0, 0, 0, 0, -37, -112, 0, 0, 0, 0, -44, -118, 0, 0, 0, 0, -26, -116, 0, 0, 0, 0, -5, -116, 0, 0, 0, 0, 21, -125, 0, 0, 0, 0, 26, -125, 0, 0, 0, 0, 44, -123, 0, 0, 0, 0, -4, -129, 0, 0, 0, 0, -22, -128, 0, 0, 0, 0, -26, -128, 0, 0, 0, 0, -35, -127, 0, 0, 0, 0, -39, -104, 0, 0, 0, 0, -19, -101, 0, 0, 0, 0, -12, -100, 0, 0, 0, 0, -8, -83)
+}
+point_count = 32
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0kys1"]
 resource_name = "BlackMetal"
@@ -172,3 +178,4 @@ reserve_ammo = inf
 max_reserve_ammo = inf
 auto_fire = true
 max_fire_rate_ms = 50.0
+spray_pattern = SubResource("Curve2D_y176m")

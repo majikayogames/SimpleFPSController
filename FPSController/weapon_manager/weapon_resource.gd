@@ -36,6 +36,8 @@ extends Resource
 @export var auto_fire : bool = true
 @export var max_fire_rate_ms : float = 50
 
+@export var spray_pattern : Curve2D
+
 const RAYCAST_DIST : float = 9999 # Too far seems to break it
 
 var weapon_manager : WeaponManager
@@ -116,6 +118,8 @@ func fire_shot():
 	weapon_manager.queue_anim(view_idle_anim)
 	
 	var raycast = weapon_manager.bullet_raycast
+	raycast.rotation.x = weapon_manager.get_current_recoil().x
+	raycast.rotation.y = weapon_manager.get_current_recoil().y
 	raycast.target_position = Vector3(0,0,-abs(RAYCAST_DIST))
 	raycast.force_raycast_update()
 	
@@ -134,6 +138,7 @@ func fire_shot():
 	weapon_manager.show_muzzle_flash()
 	if num_shots_fired % 2 == 0:
 		weapon_manager.make_bullet_trail(bullet_target_pos)
+	weapon_manager.apply_recoil()
 	
 	last_fire_time = Time.get_ticks_msec()
 	current_ammo -= 1

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="WeaponResource" load_steps=7 format=3 uid="uid://bty5tmoxmnrpp"]
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=8 format=3 uid="uid://bty5tmoxmnrpp"]
 
 [ext_resource type="AudioStream" uid="uid://ciia5r5sl6puk" path="res://FPSController/weapon_manager/sounds/cc0-276959__gfl7__pistol-reload-sound.mp3" id="1_6x3ih"]
 [ext_resource type="Script" path="res://FPSController/weapon_manager/weapon_resource.gd" id="1_qno7s"]
@@ -6,6 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://dk7rhpeuilvk4" path="res://FPSController/weapon_manager/deagle/deagle.glb" id="3_cuf8r"]
 [ext_resource type="AudioStream" uid="uid://yx2ulxpqvsmj" path="res://FPSController/weapon_manager/sounds/cc0-371041__morganpurkis__single-gunshot-3.wav" id="3_xr1ln"]
 [ext_resource type="AudioStream" uid="uid://cchklld8p4183" path="res://FPSController/weapon_manager/sounds/cc0-377145__nioczkus__pistol-draw-unholster.wav" id="4_f462s"]
+
+[sub_resource type="Curve2D" id="Curve2D_vmmo5"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, -200)
+}
+point_count = 1
 
 [resource]
 script = ExtResource("1_qno7s")
@@ -31,3 +37,4 @@ reserve_ammo = 999.0
 max_reserve_ammo = 999.0
 auto_fire = false
 max_fire_rate_ms = 50.0
+spray_pattern = SubResource("Curve2D_vmmo5")
