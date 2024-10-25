@@ -1,4 +1,4 @@
-[gd_scene load_steps=101 format=4 uid="uid://cumlkudt7n44b"]
+[gd_scene load_steps=102 format=4 uid="uid://cumlkudt7n44b"]
 
 [ext_resource type="Material" uid="uid://bk7nbd8td4gb1" path="res://textures/grey_checkerboard_mat.tres" id="1_1bstl"]
 [ext_resource type="PackedScene" uid="uid://f6kx848g5bco" path="res://FPSController/FPSController.tscn" id="1_2lyst"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://ca0wevg1lb4rx" path="res://utils/WaterMaker3D/WaterMaker3D.tscn" id="8_yjcdx"]
 [ext_resource type="Script" path="res://FPSController/InteractableComponent.gd" id="9_epvnr"]
 [ext_resource type="PackedScene" uid="uid://7dm87wp0hyjg" path="res://models/wiggly_hair.tscn" id="12_11xej"]
+[ext_resource type="AudioStream" uid="uid://d3811jtgsamp7" path="res://cc0-die.wav" id="12_44fvf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bwjpn"]
 
@@ -531,6 +532,10 @@ func take_damage(amount : int):
 	hp -= amount
 	if hp <= 0:
 		self.queue_free()
+		$\"../AudioStreamPlayer3D\".play()
+
+func take_backstab_damage(amount : int):
+	take_damage(amount * 10)
 "
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7w2r7"]
@@ -1215,46 +1220,52 @@ libraries = {
 [node name="InteractableComponent" type="Node" parent="AnimatableBody3D"]
 script = ExtResource("9_epvnr")
 
-[node name="RigidBody3D" type="RigidBody3D" parent="."]
+[node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 1.14304, 0.0219994, -61.7708)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Node3D"]
+stream = ExtResource("12_44fvf")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.38419e-07, 4.09782e-08, 0)
 mass = 3.0
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, -1, 0)
 script = SubResource("GDScript_t5kxy")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D/RigidBody3D"]
 shape = SubResource("CapsuleShape3D_7w2r7")
 
-[node name="SwagCapsule" type="MeshInstance3D" parent="RigidBody3D"]
+[node name="SwagCapsule" type="MeshInstance3D" parent="Node3D/RigidBody3D"]
 mesh = SubResource("CapsuleMesh_61jf2")
-skeleton = NodePath("../..")
+skeleton = NodePath("../../..")
 
-[node name="WigglyHair" parent="RigidBody3D/SwagCapsule" instance=ExtResource("12_11xej")]
+[node name="WigglyHair" parent="Node3D/RigidBody3D/SwagCapsule" instance=ExtResource("12_11xej")]
 
-[node name="disguise-glasses" type="Node3D" parent="RigidBody3D/SwagCapsule"]
+[node name="disguise-glasses" type="Node3D" parent="Node3D/RigidBody3D/SwagCapsule"]
 transform = Transform3D(-2.20395, 0, -1.92676e-07, 0, 2.20395, 0, 1.92676e-07, 0, -2.20395, 2.44249e-15, 0.14273, -0.0354874)
 
-[node name="Cube_003" type="MeshInstance3D" parent="RigidBody3D/SwagCapsule/disguise-glasses"]
+[node name="Cube_003" type="MeshInstance3D" parent="Node3D/RigidBody3D/SwagCapsule/disguise-glasses"]
 transform = Transform3D(0.102513, 0, 0, 0, 0.034117, 0, 0, 0, 0.0218561, 0.00139083, -0.0289336, 0.207999)
 mesh = SubResource("ArrayMesh_lfy7x")
 skeleton = NodePath("")
 
-[node name="Cube_002" type="MeshInstance3D" parent="RigidBody3D/SwagCapsule/disguise-glasses"]
+[node name="Cube_002" type="MeshInstance3D" parent="Node3D/RigidBody3D/SwagCapsule/disguise-glasses"]
 transform = Transform3D(0.0401715, 0, 0, 0, 0.0401715, 0, 0, 0, 0.0401715, 0, 0.112903, 0.212896)
 mesh = SubResource("ArrayMesh_ccjau")
 skeleton = NodePath("")
 
-[node name="Cube_001" type="MeshInstance3D" parent="RigidBody3D/SwagCapsule/disguise-glasses"]
+[node name="Cube_001" type="MeshInstance3D" parent="Node3D/RigidBody3D/SwagCapsule/disguise-glasses"]
 transform = Transform3D(0.102513, 0, 0, 0, 0.034117, 0, 0, 0, 0.0218561, 0.107022, 0.223796, 0.209073)
 mesh = SubResource("ArrayMesh_bxb21")
 skeleton = NodePath("")
 
-[node name="Cube" type="MeshInstance3D" parent="RigidBody3D/SwagCapsule/disguise-glasses"]
+[node name="Cube" type="MeshInstance3D" parent="Node3D/RigidBody3D/SwagCapsule/disguise-glasses"]
 transform = Transform3D(0.064669, 0, 0, 0, 0.0585955, 0, 0, 0, -0.0113897, 0, 0.118893, 0.209147)
 mesh = SubResource("ArrayMesh_8jnul")
 skeleton = NodePath("")
 
-[node name="Label3D" type="Label3D" parent="RigidBody3D"]
+[node name="Label3D" type="Label3D" parent="Node3D/RigidBody3D"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 2.05961, 0)
 text = "HP: 1000"
 font = SubResource("SystemFont_jiwdd")
