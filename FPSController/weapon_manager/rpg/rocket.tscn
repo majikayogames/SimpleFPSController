@@ -1,0 +1,47 @@
+[gd_scene load_steps=4 format=3 uid="uid://bu6i3jjm3qmrq"]
+
+[ext_resource type="PackedScene" uid="uid://cyyiilavdajis" path="res://FPSController/weapon_manager/rpg/missile.glb" id="1_p666w"]
+
+[sub_resource type="GDScript" id="GDScript_gpftl"]
+script/source = "extends RigidBody3D
+
+var timer = 0.0
+
+func explode_projectile(normal = Vector3(0,1,0), position = self.global_position, collider_obj = null):
+	var explosion_effect := preload(\"res://FPSController/weapon_manager/explosion_effect.tscn\").instantiate()
+	if collider_obj:
+		collider_obj.add_child(explosion_effect)
+	else:
+		add_sibling(explosion_effect)
+	explosion_effect.global_transform = Transform3D(Basis(Quaternion(Vector3.UP, normal)), position)
+	self.queue_free()
+
+func _integrate_forces(state : PhysicsDirectBodyState3D):
+	if state.get_contact_count() > 0:
+		explode_projectile(state.get_contact_local_normal(0), state.get_contact_local_position(0), state.get_contact_collider_object(0))
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	timer += delta
+	
+	if timer > 10:
+		explode_projectile()
+"
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_eqbdw"]
+radius = 0.292776
+height = 1.2738
+
+[node name="Rocket" type="RigidBody3D"]
+gravity_scale = 0.0
+continuous_cd = true
+contact_monitor = true
+max_contacts_reported = 1
+script = SubResource("GDScript_gpftl")
+
+[node name="missile" parent="." instance=ExtResource("1_p666w")]
+transform = Transform3D(-1.12775e-08, 0, 0.258, 0, 0.258, 0, -0.258, 0, -1.12775e-08, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_eqbdw")
