@@ -1,0 +1,264 @@
+[gd_scene load_steps=20 format=3 uid="uid://rujqiimw56c4"]
+
+[ext_resource type="Script" path="res://FPSController/weapon_manager/player_hud/player_hud.gd" id="1_uwm2g"]
+[ext_resource type="PackedScene" uid="uid://bgvmmyurcn8e1" path="res://FPSController/weapon_manager/player_hud/weapon_select_layout.tscn" id="2_m7x0c"]
+[ext_resource type="Texture2D" uid="uid://bdr0gx5en043u" path="res://FPSController/weapon_manager/player_hud/crosshair/crosshair-dot.svg" id="2_qxxhy"]
+[ext_resource type="Texture2D" uid="uid://palrdgk0wybs" path="res://FPSController/weapon_manager/player_hud/crosshair/crosshair-left-outline.svg" id="3_ith38"]
+[ext_resource type="Texture2D" uid="uid://b7qlftjsxoqwu" path="res://FPSController/weapon_manager/player_hud/crosshair/crosshair-left-side.svg" id="4_5p2ft"]
+[ext_resource type="Shader" path="res://FPSController/weapon_manager/player_hud/crosshair.gdshader" id="4_18bpt"]
+[ext_resource type="Texture2D" uid="uid://choy1mfq25g8w" path="res://FPSController/weapon_manager/player_hud/crosshair/crosshair-right-outline.svg" id="5_enw1r"]
+[ext_resource type="Texture2D" uid="uid://iit02mdy6et8" path="res://FPSController/weapon_manager/player_hud/crosshair/crosshair-right-side.svg" id="6_jftrd"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1gb57"]
+shader = ExtResource("4_18bpt")
+shader_parameter/filled_percent = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qhnc4"]
+shader = ExtResource("4_18bpt")
+shader_parameter/filled_percent = 1.0
+
+[sub_resource type="GDScript" id="GDScript_vwyp3"]
+script/source = "extends Label
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	self.text = \"Speed: \" + str($\"../..\".player.velocity.length()).left(5) + \"m/s\"
+"
+
+[sub_resource type="GDScript" id="GDScript_jdojc"]
+script/source = "extends Label
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	self.text = \"FPS: \" + str(Engine.get_frames_per_second())
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qbqey"]
+bg_color = Color(0, 0, 0, 0.172549)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_ypkh5"]
+font_size = 18
+font_color = Color(0.439216, 0.803922, 1, 1)
+outline_size = 2
+outline_color = Color(0.439216, 0.803922, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_u4oqh"]
+font_size = 54
+font_color = Color(0.439216, 0.803922, 1, 1)
+outline_color = Color(0.439216, 0.803922, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hb4r7"]
+bg_color = Color(0, 0, 0, 0.172549)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_wpm82"]
+font_size = 18
+font_color = Color(0.439216, 0.803922, 1, 1)
+outline_size = 2
+outline_color = Color(0.439216, 0.803922, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_nqh5r"]
+font_size = 36
+font_color = Color(0.439216, 0.803922, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_tcc31"]
+font_size = 36
+font_color = Color(0.439216, 0.803922, 1, 1)
+outline_color = Color(0.439216, 0.803922, 1, 1)
+
+[node name="PlayerHUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_uwm2g")
+weapon_select_layout = ExtResource("2_m7x0c")
+
+[node name="WeaponSwitchMenu" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 130.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="1" type="VBoxContainer" parent="WeaponSwitchMenu"]
+layout_mode = 2
+
+[node name="2" type="VBoxContainer" parent="WeaponSwitchMenu"]
+layout_mode = 2
+
+[node name="3" type="VBoxContainer" parent="WeaponSwitchMenu"]
+layout_mode = 2
+
+[node name="4" type="VBoxContainer" parent="WeaponSwitchMenu"]
+layout_mode = 2
+
+[node name="5" type="VBoxContainer" parent="WeaponSwitchMenu"]
+layout_mode = 2
+
+[node name="6" type="VBoxContainer" parent="WeaponSwitchMenu"]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dot" type="TextureRect" parent="CenterContainer"]
+layout_mode = 2
+texture = ExtResource("2_qxxhy")
+
+[node name="HealthBarOutline" type="TextureRect" parent="CenterContainer"]
+layout_mode = 2
+texture = ExtResource("3_ith38")
+
+[node name="HealthBar" type="TextureRect" parent="CenterContainer"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_1gb57")
+layout_mode = 2
+texture = ExtResource("4_5p2ft")
+
+[node name="AmmoBarOutline" type="TextureRect" parent="CenterContainer"]
+layout_mode = 2
+texture = ExtResource("5_enw1r")
+
+[node name="AmmoBar" type="TextureRect" parent="CenterContainer"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_qhnc4")
+layout_mode = 2
+texture = ExtResource("6_jftrd")
+
+[node name="DebugInfo" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Speed" type="Label" parent="DebugInfo"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -185.0
+offset_top = 10.0
+offset_right = -15.0
+offset_bottom = 33.0
+grow_horizontal = 0
+text = "Speed: 0mph"
+script = SubResource("GDScript_vwyp3")
+
+[node name="FPS" type="Label" parent="DebugInfo"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -185.0
+offset_top = 42.0
+offset_right = -15.0
+offset_bottom = 65.0
+grow_horizontal = 0
+text = "FPS: 60"
+script = SubResource("GDScript_jdojc")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -105.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="HealthBox" type="Panel" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 75)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qbqey")
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/HealthBox"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 43.0
+offset_right = 83.0
+offset_bottom = 76.305
+text = "HEALTH"
+label_settings = SubResource("LabelSettings_ypkh5")
+
+[node name="HealthLabel" type="Label" parent="MarginContainer/HBoxContainer/HealthBox"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 143.0
+offset_top = 8.0
+offset_right = 235.0
+offset_bottom = 82.0
+text = "100	"
+label_settings = SubResource("LabelSettings_u4oqh")
+
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AmmoBox" type="Panel" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 75)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hb4r7")
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/AmmoBox"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 44.0
+offset_right = 134.0
+offset_bottom = 78.0
+text = "AMMO"
+label_settings = SubResource("LabelSettings_wpm82")
+
+[node name="ClipAmmoLabel" type="Label" parent="MarginContainer/HBoxContainer/AmmoBox"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 85.0
+offset_top = 15.165
+offset_right = 174.0
+offset_bottom = 74.165
+text = "15"
+label_settings = SubResource("LabelSettings_nqh5r")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="ReserveAmmoLabel" type="Label" parent="MarginContainer/HBoxContainer/AmmoBox"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 175.0
+offset_top = 15.165
+offset_right = 257.0
+offset_bottom = 74.165
+text = "∞"
+label_settings = SubResource("LabelSettings_tcc31")
+horizontal_alignment = 1
+vertical_alignment = 2

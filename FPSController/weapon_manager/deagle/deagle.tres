@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="WeaponResource" load_steps=8 format=3 uid="uid://bty5tmoxmnrpp"]
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=9 format=3 uid="uid://bty5tmoxmnrpp"]
 
 [ext_resource type="AudioStream" uid="uid://ciia5r5sl6puk" path="res://FPSController/weapon_manager/sounds/cc0-276959__gfl7__pistol-reload-sound.mp3" id="1_6x3ih"]
+[ext_resource type="Texture2D" uid="uid://dyel4dgj54ji5" path="res://FPSController/weapon_manager/deagle/deagle-icon.PNG" id="1_fvho0"]
 [ext_resource type="Script" path="res://FPSController/weapon_manager/weapon_resource.gd" id="1_qno7s"]
 [ext_resource type="PackedScene" uid="uid://w14rtvqe74fc" path="res://FPSController/weapon_manager/deagle/deagle - viewmodel.glb" id="2_iifga"]
 [ext_resource type="PackedScene" uid="uid://dk7rhpeuilvk4" path="res://FPSController/weapon_manager/deagle/deagle.glb" id="3_cuf8r"]
@@ -15,6 +16,10 @@ point_count = 1
 
 [resource]
 script = ExtResource("1_qno7s")
+name = "Deagle"
+icon = ExtResource("1_fvho0")
+slot = 2
+slot_priority = 1
 view_model = ExtResource("2_iifga")
 world_model = ExtResource("3_cuf8r")
 view_model_pos = Vector3(0.13, -0.325, 0.306)

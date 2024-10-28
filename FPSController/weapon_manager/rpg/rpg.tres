@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ProjectileWeaponResource" load_steps=17 format=4 uid="uid://qhax17vsxm8v"]
+[gd_resource type="Resource" script_class="ProjectileWeaponResource" load_steps=18 format=4 uid="uid://qhax17vsxm8v"]
 
 [ext_resource type="PackedScene" uid="uid://bu6i3jjm3qmrq" path="res://FPSController/weapon_manager/rpg/rocket.tscn" id="1_0ly76"]
+[ext_resource type="Texture2D" uid="uid://bgnvsqeaq81pn" path="res://FPSController/weapon_manager/rpg/rocket-launcher-icon.PNG" id="1_ku5oj"]
 [ext_resource type="Script" path="res://FPSController/weapon_manager/projectile_weapon_resource.gd" id="1_nsrch"]
 [ext_resource type="PackedScene" uid="uid://ualtb5j6bg2n" path="res://FPSController/weapon_manager/rpg/rocket-launcher.glb" id="3_kb014"]
 
@@ -199,6 +200,10 @@ projectile = ExtResource("1_0ly76")
 projectile_relative_velocity = Vector3(0, 0, -15)
 projectile_relative_spawn_pos = Vector3(0, 0, -3)
 projectile_relative_spawn_rotation = Vector3(0, 0, 0)
+name = "RPG"
+icon = ExtResource("1_ku5oj")
+slot = 4
+slot_priority = 1
 view_model = ExtResource("3_kb014")
 world_model = SubResource("PackedScene_gg5uu")
 view_model_pos = Vector3(0.645, -0.503, -0.631)
@@ -213,7 +218,7 @@ view_shoot_anim = ""
 view_reload_anim = ""
 damage = 10
 current_ammo = 11.0
-magazine_capacity = 111.0
+magazine_capacity = 11.0
 reserve_ammo = inf
 max_reserve_ammo = inf
 auto_fire = false

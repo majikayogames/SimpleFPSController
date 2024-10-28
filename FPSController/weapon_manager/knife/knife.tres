@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="MeleeWeaponResource" load_steps=7 format=3 uid="uid://i7tuf5jj3yv8"]
+[gd_resource type="Resource" script_class="MeleeWeaponResource" load_steps=8 format=3 uid="uid://i7tuf5jj3yv8"]
 
+[ext_resource type="Texture2D" uid="uid://4h86ti7jpp6w" path="res://FPSController/weapon_manager/knife/knife-icon.PNG" id="1_c0snr"]
 [ext_resource type="AudioStream" uid="uid://ds2wodhv6qkm8" path="res://FPSController/weapon_manager/sounds/cc0-swoosh.wav" id="1_cpxfk"]
 [ext_resource type="Script" path="res://FPSController/weapon_manager/melee_weapon_resource.gd" id="1_n17kf"]
 [ext_resource type="AudioStream" uid="uid://b6t55b1i12ey3" path="res://FPSController/weapon_manager/sounds/cc0-118792__lmbubec__1_knife_slash_a.wav" id="3_yyc7o"]
@@ -11,6 +12,10 @@
 script = ExtResource("1_n17kf")
 max_hit_dist = 2.3
 miss_sound = ExtResource("1_cpxfk")
+name = "Knife"
+icon = ExtResource("1_c0snr")
+slot = 3
+slot_priority = 1
 view_model = ExtResource("5_ac8ht")
 world_model = ExtResource("6_vst25")
 view_model_pos = Vector3(0, -0.33, 0.34)

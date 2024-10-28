@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="ProjectileWeaponResource" load_steps=14 format=4 uid="uid://b3rl16usattjg"]
+[gd_resource type="Resource" script_class="ProjectileWeaponResource" load_steps=15 format=4 uid="uid://b3rl16usattjg"]
 
+[ext_resource type="Texture2D" uid="uid://d21grxwsdhgeq" path="res://FPSController/weapon_manager/grenade/grenade-icon.PNG" id="1_2nplp"]
 [ext_resource type="Script" path="res://FPSController/weapon_manager/projectile_weapon_resource.gd" id="1_8pbhl"]
 [ext_resource type="PackedScene" uid="uid://cwdnyyqsa4qsi" path="res://FPSController/weapon_manager/grenade/grenade_projectile.tscn" id="1_q8cdr"]
 [ext_resource type="PackedScene" uid="uid://cylyt34ibs5gx" path="res://FPSController/weapon_manager/grenade/grenade.glb" id="3_f6won"]
@@ -142,6 +143,10 @@ projectile = ExtResource("1_q8cdr")
 projectile_relative_velocity = Vector3(0, 0, -15)
 projectile_relative_spawn_pos = Vector3(0, 0, -2)
 projectile_relative_spawn_rotation = Vector3(0, 0, 0)
+name = "Grenade"
+icon = ExtResource("1_2nplp")
+slot = 4
+slot_priority = 2
 view_model = ExtResource("3_f6won")
 world_model = SubResource("PackedScene_7ophx")
 view_model_pos = Vector3(0.55, -0.538, -0.906)

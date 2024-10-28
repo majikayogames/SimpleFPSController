@@ -9,10 +9,7 @@ var timer = 0.0
 
 func explode_projectile(normal = Vector3(0,1,0), position = self.global_position, collider_obj = null):
 	var explosion_effect := preload(\"res://FPSController/weapon_manager/explosion_effect.tscn\").instantiate()
-	if collider_obj:
-		collider_obj.add_child(explosion_effect)
-	else:
-		add_sibling(explosion_effect)
+	add_sibling(explosion_effect)
 	explosion_effect.global_transform = Transform3D(Basis(Quaternion(Vector3.UP, normal)), position)
 	self.queue_free()
 

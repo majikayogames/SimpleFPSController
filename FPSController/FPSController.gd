@@ -25,6 +25,12 @@ var headbob_time := 0.0
 @export var swim_up_speed := 10.0
 @export var climb_speed := 7.0
 
+@export var health := 100.0
+@export var max_health := 100.0
+
+func take_damage(damage : float):
+	health -= damage
+
 # Camera options
 enum CameraStyle {
 	FIRST_PERSON, THIRD_PERSON_VERTICAL_LOOK, THIRD_PERSON_FREE_LOOK
