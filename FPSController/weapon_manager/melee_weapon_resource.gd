@@ -6,6 +6,7 @@ extends WeaponResource
 @export var miss_sound : AudioStream
 
 func fire_shot():
+	weapon_manager.trigger_weapon_shoot_world_anim()
 	weapon_manager.play_anim(view_shoot_anim)
 	weapon_manager.queue_anim(view_idle_anim)
 	

@@ -7,6 +7,7 @@ extends WeaponResource
 @export var projectile_relative_spawn_rotation := Vector3(0,0,0)
 
 func fire_shot():
+	weapon_manager.trigger_weapon_shoot_world_anim()
 	weapon_manager.play_anim(view_shoot_anim)
 	weapon_manager.play_sound(shoot_sound)
 	weapon_manager.queue_anim(view_idle_anim)

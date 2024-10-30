@@ -16,6 +16,8 @@ extends Node3D
 @export var player : CharacterBody3D
 @export var bullet_raycast : RayCast3D
 
+@export var animation_tree : AnimationTree
+
 @export var view_model_container : Node3D
 @export var world_model_container : Node3D
 
@@ -91,6 +93,29 @@ func play_sound(sound : AudioStream):
 
 func stop_sounds():
 	audio_stream_player.stop()
+
+func update_weapon_hold_anims():
+	animation_tree.set("parameters/WeaponHoldBlend2/blend_amount", 1.0 if current_weapon else 0.0)
+	var state_machine_playback : AnimationNodeStateMachinePlayback = animation_tree.get("parameters/WeaponHoldStateMachine/playback")
+	if current_weapon.hold_style == WeaponResource.CharacterHoldStyle.BAZOOKA:
+		state_machine_playback.travel("Bazooka")
+	elif current_weapon.hold_style == WeaponResource.CharacterHoldStyle.SMG:
+		state_machine_playback.travel("SMG")
+	elif current_weapon.hold_style == WeaponResource.CharacterHoldStyle.KNIFE:
+		state_machine_playback.travel("Knife")
+	elif current_weapon.hold_style == WeaponResource.CharacterHoldStyle.PISTOL:
+		state_machine_playback.travel("Pistol")
+	elif current_weapon.hold_style == WeaponResource.CharacterHoldStyle.GRENADE:
+		state_machine_playback.travel("Grenade")
+
+func trigger_weapon_shoot_world_anim():
+	if not animation_tree: return
+	var state_machine_playback : AnimationNodeStateMachinePlayback = animation_tree.get("parameters/WeaponHoldStateMachine/playback")
+	var weapon = state_machine_playback.get_current_node()
+	var stand_state = "Crouched" if player.is_crouched else "Standing"
+	var cur_playback : AnimationNodeStateMachinePlayback = animation_tree.get("parameters/WeaponHoldStateMachine/"+weapon+"/"+stand_state+"/playback")
+	if cur_playback:
+		cur_playback.start("Shoot")
 
 var last_played_anim : String = ""
 var current_anim_finished_callback
@@ -177,6 +202,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	update_weapon_hold_anims()
 	if current_weapon:
 		current_weapon.on_process(delta)
 	if current_weapon_view_model_muzzle:
