@@ -28,6 +28,7 @@ view_model_scale = Vector3(1, 1, 1)
 world_model_pos = Vector3(-0.0619192, 0.316558, 0.0433611)
 world_model_rot = Vector3(0.0438987, 2.22548, 1.44728)
 world_model_scale = Vector3(0.147359, 0.147359, 0.147359)
+hold_style = 0
 view_idle_anim = "Idle"
 view_equip_anim = "Unholster"
 view_shoot_anim = "Shoot"
