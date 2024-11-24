@@ -25,6 +25,7 @@ var current_weapon_view_model : Node3D
 var current_weapon_world_model : Node3D
 
 var current_weapon_view_model_muzzle : Node3D
+var current_weapon_world_model_muzzle : Node3D
 
 @onready var audio_stream_player = $AudioStreamPlayer3D
 
@@ -56,6 +57,7 @@ func update_weapon_model() -> void:
 		if player.has_method("update_view_and_world_model_masks"):
 			player.update_view_and_world_model_masks()
 	current_weapon_view_model_muzzle = view_model_container.find_child("Muzzle", true, false) if current_weapon_view_model else null
+	current_weapon_world_model_muzzle = world_model_container.find_child("Muzzle", true, false) if current_weapon_world_model else null
 
 ## Call this function on any node to apply the weapon_clip_and_fov_shader.gdshader to all meshes within it.
 func apply_clip_and_fov_shader_to_view_model(node3d : Node3D, fov_or_negative_for_unchanged = -1.0):
@@ -158,7 +160,10 @@ func get_anim() -> String:
 	return anim_player.current_animation
 
 func show_muzzle_flash():
-	$ViewMuzzleFlash.emitting = true
+	if current_weapon_view_model_muzzle:
+		$ViewMuzzleFlash.emitting = true
+	if current_weapon_world_model_muzzle:
+		$WorldMuzzleFlash.emitting = true
 
 func make_bullet_trail(target_pos : Vector3):
 	if current_weapon_view_model_muzzle == null:
@@ -207,4 +212,6 @@ func _process(delta: float) -> void:
 		current_weapon.on_process(delta)
 	if current_weapon_view_model_muzzle:
 		$ViewMuzzleFlash.global_position = current_weapon_view_model_muzzle.global_position
+	if current_weapon_world_model_muzzle:
+		$WorldMuzzleFlash.global_position = current_weapon_world_model_muzzle.global_position
 	heat = max(0.0, heat - delta * 10.0)

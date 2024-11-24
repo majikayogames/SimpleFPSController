@@ -9,3 +9,7 @@ script = ExtResource("1_si4dk")
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 
 [node name="ViewMuzzleFlash" parent="." instance=ExtResource("2_ur7vx")]
+layers = 256
+
+[node name="WorldMuzzleFlash" parent="." instance=ExtResource("2_ur7vx")]
+layers = 2
