@@ -1,7 +1,8 @@
 extends Control
 
-@export var player : CharacterBody3D
+@export var player : FPSController
 @export var weapon_manager : WeaponManager
+@export var show_crosshair : bool = true
 
 @export var weapon_select_layout : PackedScene
 const MAX_WEAPONS_PER_SLOT = 10
@@ -115,6 +116,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	%CrosshairCenterContainer.visible = player.camera_style == FPSController.CameraStyle.FIRST_PERSON
 	# Update weapon switch menu visibility
 	%WeaponSwitchMenu.modulate = Color(1, 1, 1, get_weapon_menu_visibility())
 	weapon_manager.allow_shoot = get_weapon_menu_visibility() != 1.0

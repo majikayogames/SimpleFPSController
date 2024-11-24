@@ -91,6 +91,7 @@ func on_trigger_up():
 	pass
 
 func on_equip():
+	weapon_manager.play_sound(unholster_sound)
 	weapon_manager.play_anim(view_equip_anim)
 	weapon_manager.queue_anim(view_idle_anim)
 

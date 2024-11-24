@@ -111,7 +111,8 @@ layout_mode = 2
 [node name="6" type="VBoxContainer" parent="WeaponSwitchMenu"]
 layout_mode = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="CrosshairCenterContainer" type="CenterContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -119,25 +120,25 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Dot" type="TextureRect" parent="CenterContainer"]
+[node name="Dot" type="TextureRect" parent="CrosshairCenterContainer"]
 layout_mode = 2
 texture = ExtResource("2_qxxhy")
 
-[node name="HealthBarOutline" type="TextureRect" parent="CenterContainer"]
+[node name="HealthBarOutline" type="TextureRect" parent="CrosshairCenterContainer"]
 layout_mode = 2
 texture = ExtResource("3_ith38")
 
-[node name="HealthBar" type="TextureRect" parent="CenterContainer"]
+[node name="HealthBar" type="TextureRect" parent="CrosshairCenterContainer"]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_1gb57")
 layout_mode = 2
 texture = ExtResource("4_5p2ft")
 
-[node name="AmmoBarOutline" type="TextureRect" parent="CenterContainer"]
+[node name="AmmoBarOutline" type="TextureRect" parent="CrosshairCenterContainer"]
 layout_mode = 2
 texture = ExtResource("5_enw1r")
 
-[node name="AmmoBar" type="TextureRect" parent="CenterContainer"]
+[node name="AmmoBar" type="TextureRect" parent="CrosshairCenterContainer"]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_qhnc4")
 layout_mode = 2
