@@ -476,11 +476,18 @@ func _handle_air_physics(delta) -> void:
 		# The floating mode is much better and less jittery for surf
 		# This bit of code is tricky. Will toggle floating mode in air
 		# is_on_floor() never triggers in floating mode, and instead is_on_wall() does.
-		if is_surface_too_steep(get_wall_normal()):
+		var wall_normal = get_wall_normal()
+		
+		# Ensure it's not a flat wall
+		var is_wall_vertical = abs(wall_normal.dot(Vector3.UP)) < 0.1 
+		
+		# Check if the surface is steep and NOT a flat wall
+		if is_surface_too_steep(wall_normal) and not is_wall_vertical:
 			self.motion_mode = CharacterBody3D.MOTION_MODE_FLOATING
 		else:
 			self.motion_mode = CharacterBody3D.MOTION_MODE_GROUNDED
-		clip_velocity(get_wall_normal(), 1, delta) # Allows surf
+		
+		clip_velocity(wall_normal, 1, delta) # Allows surf
 
 func _handle_ground_physics(delta) -> void:
 	# Similar to the air movement. Acceleration and friction on ground.
