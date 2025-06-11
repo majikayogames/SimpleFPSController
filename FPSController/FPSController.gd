@@ -157,7 +157,7 @@ func _headbob_effect(delta):
 # Smoothly interpolated controller look with acceleration and deceleration
 var _cur_controller_look = Vector2()
 func _handle_controller_look_input(delta):
-	var target_look = Input.get_vector("look_left", "look_right", "look_down", "look_up").normalized()
+	var target_look = Input.get_vector("look_left", "look_right", "look_down", "look_up")
 	
 	if target_look.length() < _cur_controller_look.length():
 		_cur_controller_look = target_look
@@ -513,7 +513,7 @@ func _physics_process(delta):
 	
 	_update_camera()
 	
-	var input_dir = Input.get_vector("left", "right", "up", "down").normalized()
+	var input_dir = Input.get_vector("left", "right", "up", "down")
 	# Depending on which way you have you character facing, you may have to negate the input directions
 	wish_dir = self.global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
 	cam_aligned_wish_dir = get_active_camera().global_transform.basis * Vector3(input_dir.x, 0., input_dir.y)
