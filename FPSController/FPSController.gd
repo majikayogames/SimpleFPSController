@@ -489,15 +489,18 @@ func _handle_air_physics(delta) -> void:
 		
 		clip_velocity(wall_normal, 1, delta) # Allows surf
 
+func _clamp_speed() -> void:
+	var max_speed = get_move_speed()
+	var velocity_planar = Vector2(velocity.x, velocity.z)
+
+	if velocity_planar.length() > max_speed:
+		var clamped_speed = velocity_planar.length() / max_speed
+		velocity_planar /= clamped_speed
+
+	velocity = Vector3(velocity_planar.x, velocity.y, velocity_planar.y)
+
 func _handle_ground_physics(delta) -> void:
-	# Similar to the air movement. Acceleration and friction on ground.
-	var cur_speed_in_wish_dir = self.velocity.dot(wish_dir)
-	var add_speed_till_cap = get_move_speed() - cur_speed_in_wish_dir
-	if add_speed_till_cap > 0:
-		var accel_speed = ground_accel * delta * get_move_speed()
-		accel_speed = min(accel_speed, add_speed_till_cap)
-		self.velocity += accel_speed * wish_dir
-	
+
 	# Apply friction
 	var control = max(self.velocity.length(), ground_decel)
 	var drop = control * ground_friction * delta
@@ -505,7 +508,18 @@ func _handle_ground_physics(delta) -> void:
 	if self.velocity.length() > 0:
 		new_speed /= self.velocity.length()
 	self.velocity *= new_speed
-	
+
+	# Similar to the air movement. Acceleration and friction on ground.
+	var cur_speed_in_wish_dir = self.velocity.dot(wish_dir)
+	var add_speed_till_cap = get_move_speed() - cur_speed_in_wish_dir
+	if add_speed_till_cap > 0:
+		var accel_speed = ground_accel * delta * get_move_speed()
+		accel_speed = min(accel_speed, add_speed_till_cap)
+		self.velocity += accel_speed * wish_dir
+
+	if is_zero_approx(velocity.y):
+		_clamp_speed()
+
 	_headbob_effect(delta)
 
 func _physics_process(delta):
