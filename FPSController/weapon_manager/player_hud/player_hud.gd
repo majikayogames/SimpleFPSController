@@ -107,6 +107,7 @@ func _unhandled_input(event):
 	if Input.is_action_pressed("shoot"):
 		if get_weapon_menu_visibility() != 0.0:
 			if hovered_weapon != null:
+				weapon_manager.current_weapon.trigger_down = false
 				weapon_manager.current_weapon = hovered_weapon
 			hide_weapon_switch_menu()
 
